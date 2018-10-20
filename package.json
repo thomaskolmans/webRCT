@@ -1,0 +1,48 @@
+{
+  "name": "webrtc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-react": "^6.24.1",
+    "json-server": "^0.12.1",
+    "nodemon": "^1.18.4",
+    "uglifyjs-webpack-plugin": "^1.1.2",
+    "webpack": "^3.5.6"
+  },
+  "dependencies": {
+    "connect": "^3.6.6",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "jquery": "^3.2.1",
+    "method-override": "^3.0.0",
+    "moment-timezone": "^0.5.14",
+    "mysql": "^2.16.0",
+    "orm": "^5.0.2",
+    "peer": "^0.2.10",
+    "peerjs": "^0.3.17",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-meta-tags": "^0.3.0",
+    "react-router-dom": "^4.3.1",
+    "webpack-dev-server": "^2.9.7"
+  },
+  "scripts": {
+    "start-server": "node server.js",
+    "b": "babel src -d dist",
+    "webpack": "webpack ",
+    "build": "npm run -s b & npm run -s webpack",
+    "dev": "webpack-dev-server --hot"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://kolmans@bitbucket.org/nytrixdesign/webrtc.git"
+  },
+  "author": "Kolmans",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/nytrixdesign/webrtc#readme"
+}

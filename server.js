@@ -1,7 +1,20 @@
-var http = require('http');
+require('dotenv').config()
+var path        = require('path');
+var settings    = require('./api/config/settings');
+var environment = require('./api/config/environment');
+var models      = require('./api/models/');
+var express = require('express'),
+  app = express(),
+  port = process.env.PORT || 3000 //created model loading here
 
-var server = http.createServer(function(req, res) {
-  res.end('Hello from NodeJS!\n');
-})
+// Start peer server
+var PeerServer = require('peer').PeerServer;
+var server = PeerServer({port: 9000, path: '/peer-server'});
 
-server.listen(3000, '0.0.0.0');
+var routes = require('./api/routes/sessionRoutes');
+environment(app);
+routes(app);
+
+app.listen(port);
+
+console.log('RESTful api started on: ' + port);
