@@ -43,11 +43,8 @@ export default class Video extends React.Component{
 	render(){
 		return (
 			<div className="video">
-				<div className="theirs">
-				
-				</div>
-				<div className="mine">
-					<video id="mine"></video>
+				<div className="streams">
+					<video className="me fullscreen" id="mine"></video>
 				</div>
 				<div className="controls">
 					<div className="mute"></div>

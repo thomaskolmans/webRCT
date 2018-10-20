@@ -7,6 +7,8 @@ import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
 import Video from './components/Video';
 
+window.instance = null;
+
 export default class WebRTC extends React.Component{
 
 	constructor(props){
@@ -21,7 +23,7 @@ export default class WebRTC extends React.Component{
 
 	}
 	componentDidUpdate(){
-        console.log(this.state);
+        window.instance = this;
 	}
 	componentDidMount(){
         var self = this;
