@@ -11,7 +11,7 @@ var express = require('express'),
 var PeerServer = require('peer').PeerServer;
 var server = PeerServer({port: 9000, path: '/peer-server'});
 
-var routes = require('./api/routes/sessionRoutes');
+var routes = require('./api/routes/routes');
 environment(app);
 routes(app);
 

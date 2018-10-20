@@ -6,7 +6,7 @@ var methodOverride = require('method-override')
 var bodyParser = require('body-parser');
 
 module.exports = function (app) {
-    app.use(express.static(path.join(settings.path, 'public')));
+    app.use(express.static(path.join(settings.path, '/../client')));
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
     app.use(methodOverride());
