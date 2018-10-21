@@ -45,6 +45,9 @@ export default class Video extends React.Component{
 					height: {ideal: 720, max: 1080 }
 			  	}
 			}, function(stream){
+				_this.setState({
+					loading: false
+				});
 				var me = document.getElementById("me");
 				me.srcObject = stream;
 				me.play();
@@ -141,13 +144,25 @@ export default class Video extends React.Component{
 		});	
 	}
 
+	usersRequest(key){
+		return new Promise((resolve, reject) => {
+			request.get('/session/' + key + '/users')
+			.end(function(error, response){
+				if (error || !response.ok) {
+					reject(error);
+				} else {
+					resolve(response);
+				}
+			});
+		});	
+	}
+
 	joinSession(key){
 		this.getSessionRequest(key).then(response => {
 			var session = response.body;
 			this.joinSessionRequest(response.body.id).then(response => {
 				this.setState({ 
 					session: session,
-					loading: false
 				});
 				this.getMyStream();
 				window.history.pushState( {} , session.key, '/' + session.key );
@@ -215,9 +230,12 @@ export default class Video extends React.Component{
 	
 	onUnload(e) { 
 		this.leaveSessionRequest(this.state.session.id);
-		if(this.state.users.length < 1){
-			this.endSessionRequest();
-		}
+		this.usersRequest(this.state.session.key).then(response => {
+			if(this.state.users.length < 1 && response.body.length > 1){
+				this.endSessionRequest();
+			}
+		})
+
 	}
 	
 	render(){
