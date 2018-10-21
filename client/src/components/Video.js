@@ -1,6 +1,7 @@
 import Peer from 'peerjs';
 import React from 'react';
 import request from 'superagent';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { ScaleLoader } from 'react-spinners';
 
 import { BUSINESS_LOGO } from "babel-dotenv"
@@ -248,8 +249,8 @@ export default class Video extends React.Component{
 					})}
 				</div>
 				<div className="controls">
-					<div className="button mute" onClick={(e) => this.toggleMute(e)}></div>
-					<div className="button video" onClick={(e) => this.toggleVideo(e)}></div>
+					<div className={"button mute " + (this.state.muted ? 'active' : '')} onClick={(e) => this.toggleMute(e)}></div>
+					<div className={"button video " + (this.state.video ? '' : 'active')} onClick={(e) => this.toggleVideo(e)}></div>
 				</div>
 				<div className="logo"><img src={BUSINESS_LOGO} /></div>
 			</div>

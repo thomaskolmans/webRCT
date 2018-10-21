@@ -36,13 +36,38 @@
             background: $white
             display: inline-block
             box-shadow: 0px 3px 8px rgba(0,0,0,0.2)
+            position: relative
+            &::before
+                content: ""
+                color: $black
+                font:
+                    family: "FontAwesome"
+                    size: 4vh
+                position: absolute
+                top: 50%
+                left: 50%
+                transform: translate(-50%,-50%)
+            &.mute
+                &::before
+                    content: "\f130"
+                &.active
+                    &::before
+                        content: "\f131"
+            &.video
+                &::before
+                    content: "\f03d"
+            &.active
+                background: $black
+                &::before
+                    color: $white
     .logo
         img
             position: absolute
             left: 10px
             bottom: 10px
             width: 20%
-            max-width: 400px
-            min-width: 150px
+            max-width: 200px
+            min-width: 100px
             height: auto
+            max-height: 200px
         
