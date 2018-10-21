@@ -1,4 +1,4 @@
-$black: black
+$black: rgba(35,35,35, 1)
 $white: white
 
 @font-face
@@ -10,8 +10,33 @@ body
     padding: 0
     background: $black
 
-.loader
+.loading
     position: absolute
-    top: 50%
-    left: 50%
-    transform: translate(-50%,-50%)
+    top: 0
+    left: 0
+    height: 100vh
+    width: 100vw
+    z-index: 1000
+    background: $black
+    display: none
+    &.active
+        display: block
+    .loader
+        position: absolute
+        top: 50%
+        left: 50%
+        transform: translate(-50%,-50%)
+    .logo
+        img
+            position: absolute
+            left: 10px
+            bottom: 10px
+            width: 20%
+            max-width: 200px
+            min-width: 100px
+            height: auto
+            max-height: 200px
+.__react_component_tooltip
+    font:
+        family: sans-serif
+        size: .7em

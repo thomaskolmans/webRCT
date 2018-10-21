@@ -13,36 +13,73 @@
             flex: 1
             overflow: hidden
             position: relative
-            video
+            video, .poster
                 position: absolute
                 left: 0
                 top: 0
                 height: 100%
                 width: 100%
+                background: $black
                 object-fit: cover
+            .poster
+                display: none
+                &.active
+                    display: block
 
     .controls
         position: absolute
-        height: 100px
         bottom: 5vh
         left: 50%
         transform: translateX(-50%)
         text-align: center
-        .button
-            margin: 0 10px
-            height: 10vh
-            width: 10vh
-            border-radius: 50%
+        background: rgba(0,0,0,0.6)
+        display: flex
+        .share-box
+            position: absolute
+            top: -200px
+            min-width: 100%
+            max-width: 300px
             background: $white
-            display: inline-block
-            box-shadow: 0px 3px 8px rgba(0,0,0,0.2)
+            display: none
+            &.active
+                display: block
+            input,button
+                border: none
+                padding: 15px
+                box-sizing: border-box
+                &:focus
+                    outline: none
+            input
+                width: 80%
+                float: left
+            button
+                width: 20%
+                float: left
+                background: black
+                color: $white
+            h2
+                font:
+                    family: sans-serif
+                    size: .9em
+                    weight: normal
+                margin-bottom: 0
+                text-align: center
+                
+        .button
+            height: 8vh
+            width: 10vh
+            flex: 1
+            background: none
             position: relative
+            &:hover
+                background: rgba(0,0,0,0.6)
+                cursor: pointer
             &::before
                 content: ""
-                color: $black
+                color: $white
                 font:
                     family: "FontAwesome"
-                    size: 4vh
+                    size: 3vh
                 position: absolute
                 top: 50%
                 left: 50%
@@ -56,10 +93,19 @@
             &.video
                 &::before
                     content: "\f03d"
-            &.active
-                background: $black
+            &.share
                 &::before
-                    color: $white
+                    content: "\f064"
+            &.full
+                &::before
+                    content: "\f0b2"
+                &.active
+                    &::before
+                        content: "\f066"
+            &.active
+                background: $white
+                &::before
+                    color: $black
     .logo
         img
             position: absolute
@@ -70,4 +116,4 @@
             min-width: 100px
             height: auto
             max-height: 200px
-        
+    
