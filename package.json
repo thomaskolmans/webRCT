@@ -15,8 +15,11 @@
     "webpack": "^3.5.6"
   },
   "dependencies": {
+    "@emotion/core": "^10.0.0-beta.5",
+    "babel-plugin-dotenv": "^0.1.1",
     "connect": "^3.6.6",
     "dotenv": "^6.1.0",
+    "dotenv-webpack": "^1.5.7",
     "express": "^4.16.4",
     "jquery": "^3.2.1",
     "method-override": "^3.0.0",
@@ -29,7 +32,9 @@
     "react-dom": "^15.6.1",
     "react-meta-tags": "^0.3.0",
     "react-router-dom": "^4.3.1",
+    "react-spinners": "^0.4.7",
     "react-transition-group": "^2.5.0",
+    "superagent": "^4.0.0-beta.5",
     "webpack-dev-server": "^2.9.7"
   },
   "scripts": {

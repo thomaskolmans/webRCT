@@ -1,4 +1,4 @@
-import Peer from 'peerjs';
+require('dotenv').config()
 import React from 'react';
 import ReactDOM from 'react-dom';
 import MetaTags from 'react-meta-tags';
@@ -7,32 +7,13 @@ import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
 import Video from './components/Video';
 
-window.instance = null;
 
 export default class WebRTC extends React.Component{
 
 	constructor(props){
 		super(props);
-		
-        this.state = {
-            peer: new Peer({ host: 'localhost', port: 9000, path: 'peer-server', debug: 3}),
-            user_key: ''
-        } 
-        
-        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-
-	}
-	componentDidUpdate(){
-        window.instance = this;
-	}
-	componentDidMount(){
-        var self = this;
-        var me = this.state.peer;
-        me.on('open', function() {
-            self.setState({user_key: me.id});
-        });
-	}
-
+    }
+    
 	render(){
 		return (
 			<BrowserRouter history={BrowserHistory}>
@@ -41,8 +22,8 @@ export default class WebRTC extends React.Component{
                         <TransitionGroup>
                             <CSSTransition key={location.key} classNames="pagefade" timeout={300}>
                                 <Switch location={location}>
-								    <Route exact path="/" component={PageShell(Video)} />
-								    <Route exact path="/:key" component={PageShell(Video)} />
+								    <Route exact path="/" component={PageShell(Video)} key="video" />
+								    <Route exact path="/:key" component={PageShell(Video)} key="video" />
                                 </Switch>
                             </CSSTransition>
                         </TransitionGroup>

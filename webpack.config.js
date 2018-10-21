@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
 	entry: {
@@ -8,6 +9,9 @@ module.exports = {
 	},
 	output: {
 	    filename: "client/dist/[name].js"
+	},
+	node: {
+		fs: 'empty'
 	},
 	module: {
 	  rules: [
@@ -25,6 +29,7 @@ module.exports = {
 	  ]
 	},
 	plugins: [
+		new Dotenv(),
 		new webpack.ProvidePlugin({
 			$: 'jquery',
 			jQuery: 'jquery',
