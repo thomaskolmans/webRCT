@@ -1,10 +1,68 @@
 $black: rgba(35,35,35, 1)
 $white: white
-
+$s: 0.4s
 @font-face
     font-family: FontAwesome
     src: url(/fonts/FontAwesome.otf)
+
+=transition($s)
+    transition: $s
+    -webkit-transition: $s
     
+=psuedo()
+    position: absolute
+    content: ""
+    left: 0
+    top: 0
+    
+=animation($animate...)
+    $max: length($animate)
+    $animations: ""
+
+    @for $i from 1 through $max
+        $animations: #{$animations + nth($animate, $i)}
+
+        @if $i < $max
+            $animations: #{$animations + ", "}
+
+    -webkit-animation: $animations
+    -moz-animation: $animations
+    -o-animation: $animations
+    animation: $animations
+
+=keyframes($animationName)
+    @-webkit-keyframes #{$animationName}
+        @content
+
+    @-moz-keyframes #{$animationName}
+        @content
+
+    @-o-keyframes #{$animationName}
+        @content
+
+    @keyframes #{$animationName}
+        @content
+
++keyframes(pop-in-controls)
+    0%
+        opacity: 0
+        transform: translateX(-50%) translateY(100%)
+    65%
+        opacity: 1
+    80%
+        transform: translateX(-50%) translateY(10%)
+    100%
+        transform: translateX(-50%) translateY(0%)
++keyframes(pop-out-controls)
+    0%
+        opacity: 1
+        transform: translateX(-50%) translateY(0%)
+    65%
+        opacity: 0
+    80%
+        transform: translateX(-50%) translateY(90%)
+    100%
+        transform: translateX(-50%) translateY(100%)
 body
     margin: 0
     padding: 0
@@ -19,8 +77,10 @@ body
     z-index: 1000
     background: $black
     display: none
+    +transition($s)
     &.active
         display: block
+        +transition($s)
     .loader
         position: absolute
         top: 50%

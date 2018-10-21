@@ -14,6 +14,4 @@ module.exports = function(app) {
   app.post('/session/leave', session.leave);
   app.post('/session/end', session.end);
 
-  app.get("*", home);
-
 };

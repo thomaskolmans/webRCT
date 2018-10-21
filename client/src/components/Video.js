@@ -5,6 +5,8 @@ import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { ScaleLoader } from 'react-spinners';
 import ReactTooltip from 'react-tooltip'
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import hark from 'hark';
 
 import { BUSINESS_LOGO } from "babel-dotenv"
 
@@ -14,7 +16,7 @@ export default class Video extends React.Component{
 		super(props);
 		this.state = {
 			loading: true,
-			peer: new Peer({ host: 'localhost', port: 9000, path: 'peer-server', debug: 3}),
+			peer: new Peer({host: location.hostname, port: location.port, path: '/peerjs', proxied: true, debug: 3}),
 			user_key: '',
 			session: null,
 			users: [],
@@ -25,24 +27,46 @@ export default class Video extends React.Component{
 			facing_front: true,
 			fullscreen: false,
 			share_box: false,
-			error: {
-				hasError: false,
-				message: ""
-			}
+			controls: true
 		}
-		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+		let getUserMedia = navigator.getUserMedia || navigator.mediaDevices.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+		if (getUserMedia) {
+			getUserMedia = getUserMedia.bind(navigator);
+		} else {
+			toast.error("User media not supported. Please use Chrome, Firefox or Safari.", {
+				position: toast.POSITION.TOP_LEFT
+			});	  
+		}
 		this.onUnload = this.onUnload.bind(this);
+		this.activity = this.activity.bind(this);
 		var _this = this;
 
 		this.state.peer.on('call', function(call){
 			call.answer(window.localStream);
 			_this.answerCall(call, call.id);
+			this.activeUsersRequest(this.state.session.key).then(response => {
+				this.setState({
+					users: response.body.filter(el => { return el.key != this.state.user_key })
+				});
+			});
 		});
 		this.state.peer.on('error', function(err){
 			toast.error(err.message, {
 				position: toast.POSITION.TOP_LEFT
 			});	  
 		});
+
+		this.idleTime = 0
+		setInterval(() => {
+			this.idleTime = this.idleTime + 1
+			if(this.idleTime > 1) {
+				let controlsClassList = document.getElementById('controls').classList;
+				if(!controlsClassList.contains('hidden')){
+					controlsClassList.add('hidden');
+					document.body.style.cursor = "none";
+				}
+			}
+		}, 2000)
 	}
 
 	guid() {
@@ -178,7 +202,7 @@ export default class Video extends React.Component{
 		});	
 	}
 
-	joinSession(key){
+	joinSession(key, message = false){
 		this.getSessionRequest(key).then(response => {
 			var session = response.body;
 			this.joinSessionRequest(response.body.id).then(response => {
@@ -187,6 +211,11 @@ export default class Video extends React.Component{
 				});
 				this.getMyStream();
 				window.history.pushState( {} , session.key, '/' + session.key );
+				if(message){
+					toast.success("You've successfully joined a session!", {
+						position: toast.POSITION.TOP_LEFT
+					});
+				}
 				this.activeUsersRequest(session.key).then(response => {
 					this.setState({
 						users: response.body.filter(el => { return el.key != this.state.user_key })
@@ -204,6 +233,9 @@ export default class Video extends React.Component{
 	createSession(){
 		this.createSessionRequest().then(response => {
 			this.joinSession(response.body.key);
+			toast.success("You've created and joined a new session!", {
+				position: toast.POSITION.TOP_LEFT
+			});
 		}).catch(error => {
 			toast.error("Can't create a session", {
 				position: toast.POSITION.TOP_LEFT
@@ -247,6 +279,15 @@ export default class Video extends React.Component{
 					stream: stream
 				})
 			}
+
+			var speechEvents = hark(stream, {})
+			speechEvents.on('speaking', function() {
+				console.log(id + ' is speaking');
+			});
+			speechEvents.on('stopped_speaking', function() {
+				console.log(id + ' stopped speaking');
+			});
+
 			this.setState({
 				streams: previousStreams,
 				loading: false
@@ -266,6 +307,11 @@ export default class Video extends React.Component{
 			this.setState({
 				streams: previousStreams
 			})
+			this.activeUsersRequest(this.state.session.key).then(response => {
+				this.setState({
+					users: response.body.filter(el => { return el.key != this.state.user_key })
+				});
+			});
 		})
 	}
 
@@ -282,7 +328,6 @@ export default class Video extends React.Component{
 	}
 
 	toggleVideo(){
-		//TODO: Don't send video
 		let me = this.state.streams[0]
 		me.stream.getVideoTracks()[0].enabled = !this.state.video
 		this.setState({
@@ -333,7 +378,7 @@ export default class Video extends React.Component{
 			if(this.props.match.params.key == undefined){
 				this.createSession();
 			} else {
-				this.joinSession(this.props.match.params.key);
+				this.joinSession(this.props.match.params.key, true);
 			}
 		}
 
@@ -348,6 +393,7 @@ export default class Video extends React.Component{
 					video.src = URL.createObjectURL(stream.stream);
 				}
 				video.load();
+				video.play();
 				video.addEventListener('loadeddata', function(){
 					video.play();
 					let previousStreamState = null
@@ -370,15 +416,17 @@ export default class Video extends React.Component{
 							streams: previousStreams
 						})
 					}
-				 }, false);
+				}, false);
 				window.localStream = stream.stream;
 			});
 		}
 	}
 
 	componentDidMount(){
-		window.addEventListener("beforeunload", this.onUnload)
+		window.addEventListener("beforeunload", this.onUnload);
+		["mousemove", "touchmove", "keypress"].forEach(event => window.addEventListener(event,this.activity) );
         this.state.peer.on('open', () => {
+			console.log(this.state.peer.id);
             this.setState({user_key: this.state.peer.id});
         });
 	}
@@ -387,6 +435,15 @@ export default class Video extends React.Component{
         window.removeEventListener("beforeunload", this.onUnload)
 	}
 	
+	activity(e){
+		this.idleTime = 0
+		let controlsClassList = document.getElementById('controls').classList;
+		if(controlsClassList.contains('hidden')){
+			controlsClassList.remove('hidden');
+			document.body.style.cursor = "default";
+		}
+	}
+
 	onUnload(e) { 
 		this.leaveSessionRequest(this.state.session.id);
 		this.usersRequest(this.state.session.key).then(response => {
@@ -404,17 +461,25 @@ export default class Video extends React.Component{
 						{this.state.streams.map(stream => {
 							return (
 								<div className="video-content" key={stream.key}>
-									<div className="poster"><img src="/images/placeholder.png" /></div>
+									<div className={"poster " + (stream.stream.getVideoTracks()[0].enabled ? 'hidden' : 'active')}><img src="/images/placeholder.png" /></div>
+									<div className="muted"></div>
+									<div className={"loading " + (stream.loading ? 'active' : 'hidden')}><ScaleLoader className={"loader"}  sizeUnit={"px"} size={150} color={'white'} loading={true} /></div>
 									<video muted={(stream.key == this.state.user_key)} className={ (stream.key == this.state.user_key) ? 'me' : ''} key={stream.key} id={stream.key} ></video>
 								</div>
 							);
 						})}
 					</div>
-					<div className="controls">
+					<div className={"controls"} id="controls">
 						<div className={"share-box " + (this.state.share_box ? 'active' : 'hidden')}>
 							<h2>Share this link</h2>
 							<input type="text" value={window.location} readOnly></input>
-							<CopyToClipboard text={window.location} >
+							<CopyToClipboard text={window.location} 
+								onCopy={() => {
+									this.setState({share_box: false});
+									toast.success("Succesfully copied URL!", {
+										position: toast.POSITION.TOP_LEFT
+									});		
+								}} >
 								<button>Copy</button>
 							</CopyToClipboard>
 						</div>
@@ -430,7 +495,7 @@ export default class Video extends React.Component{
 					<ScaleLoader className="loader" sizeUnit={"px"} size={150} color={'white'}l oading={true} />
 					<div className="logo"><img src={BUSINESS_LOGO} /></div>
 				</div> 
-				<ToastContainer />
+				<ToastContainer autoClose={3000} />
 			</div>
  		);
 	}

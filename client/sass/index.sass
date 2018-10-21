@@ -23,8 +23,40 @@
                 object-fit: cover
             .poster
                 display: none
+                z-index: 10
+                +transition($s)
+                img
+                    height: 400px
+                    width: 400px
+                    border-radius: 50%
+                    max-height: 60%
+                    max-width: 100%
+                    object-fit: cover
+                    position: absolute
+                    top: 50%
+                    left: 50%
+                    transform: translate(-50%, -50%)
                 &.active
                     display: block
+                    +transition($s)
+            .loading
+                position: absolute
+                top: 0
+                left: 0
+                height: 100%
+                width: 100%
+                z-index: 1000
+                background: $black
+                display: none
+                +transition($s)
+                &.active
+                    display: block
+                    +transition($s)
+                .loader
+                    position: absolute
+                    top: 50%
+                    left: 50%
+                    transform: translate(-50%,-50%)
 
     .controls
         position: absolute
@@ -34,15 +66,25 @@
         text-align: center
         background: rgba(0,0,0,0.6)
         display: flex
+        z-index: 100
+        +animation(pop-in-controls 0.6s)
+        +transition($s)
+        &.hidden
+            opacity: 0
+            pointer-events: none
+            +animation(pop-out-controls 0.6s)
+            +transition($s)
         .share-box
             position: absolute
-            top: -200px
+            bottom: 10vh
             min-width: 100%
             max-width: 300px
             background: $white
             display: none
+            +transition($s)
             &.active
                 display: block
+                +transition($s)
             input,button
                 border: none
                 padding: 15px
@@ -57,6 +99,8 @@
                 float: left
                 background: black
                 color: $white
+                &:hover
+                    cursor: pointer
             h2
                 font:
                     family: sans-serif
@@ -71,9 +115,11 @@
             flex: 1
             background: none
             position: relative
+            +transition($s)
             &:hover
                 background: rgba(0,0,0,0.6)
                 cursor: pointer
+                +transition($s)
             &::before
                 content: ""
                 color: $white
@@ -84,6 +130,7 @@
                 top: 50%
                 left: 50%
                 transform: translate(-50%,-50%)
+                +transition($s)
             &.mute
                 &::before
                     content: "\f130"
@@ -104,9 +151,12 @@
                         content: "\f066"
             &.active
                 background: $white
+                +transition($s)
                 &::before
                     color: $black
+                    +transition($s)
     .logo
+        z-index: 100
         img
             position: absolute
             left: 10px
