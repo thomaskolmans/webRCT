@@ -2,7 +2,7 @@
   "name": "webrtc",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "/client/webrtc.js",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
@@ -15,9 +15,14 @@
     "webpack": "^3.5.6"
   },
   "dependencies": {
+    "@emotion/core": "^10.0.0-beta.5",
+    "babel-plugin-dotenv": "^0.1.1",
     "connect": "^3.6.6",
+    "css-loader": "^1.0.0",
     "dotenv": "^6.1.0",
+    "dotenv-webpack": "^1.5.7",
     "express": "^4.16.4",
+    "hark": "^1.2.3",
     "jquery": "^3.2.1",
     "method-override": "^3.0.0",
     "moment-timezone": "^0.5.14",
@@ -25,15 +30,22 @@
     "orm": "^5.0.2",
     "peer": "^0.2.10",
     "peerjs": "^0.3.17",
-    "react": "^15.6.1",
+    "react": "^15.6.2",
+    "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^15.6.1",
     "react-meta-tags": "^0.3.0",
     "react-router-dom": "^4.3.1",
+    "react-spinners": "^0.4.7",
+    "react-toastify": "^4.4.0",
+    "react-tooltip": "^3.9.0",
+    "react-transition-group": "^2.5.0",
+    "style-loader": "^0.23.1",
+    "superagent": "^4.0.0-beta.5",
     "webpack-dev-server": "^2.9.7"
   },
   "scripts": {
     "start-server": "node server.js",
-    "b": "babel src -d dist",
+    "b": "babel client/src -d client/dist",
     "webpack": "webpack ",
     "build": "npm run -s b & npm run -s webpack",
     "dev": "webpack-dev-server --hot"

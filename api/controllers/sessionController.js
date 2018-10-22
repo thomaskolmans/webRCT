@@ -4,10 +4,10 @@ var orm     = require('orm');
 
 module.exports = {
   get: function (req, res, next) {
-    req.models.session.find({key: req.params.key}, function (err, session) {
+    req.models.session.find({key: req.params.key, ended: null}, function (err, session) {
       if(err) {
         if(Array.isArray(err)) {
-          return res.status(422).send({ errors: helpers.formatErrors(err) });
+          return res.status(422).send({ error: helpers.formatErrors(err) });
         } else {
           return next(err);
         }
@@ -15,7 +15,7 @@ module.exports = {
       if (session.length > 0){
         return res.status(200).send(session[0].serialize());
       } else {
-        return res.status(200).send({ errors: "No session available" });
+        return res.status(404).send({ error: "No session available" });
       }
     });
   },
@@ -23,7 +23,7 @@ module.exports = {
     req.models.session.find({key: req.params.key}, function (err, sessions) {
       if(err) {
         if(Array.isArray(err)) {
-          return res.status(422).send({ errors: helpers.formatErrors(err) });
+          return res.status(422).send({ error: helpers.formatErrors(err) });
         } else {
           return next(err);
         }
@@ -32,7 +32,7 @@ module.exports = {
         req.models.session_user.find({session_id: sessions[0].id}, function (err, session_users) {
           if(err) {
             if(Array.isArray(err)) {
-              return res.status(422).send({ errors: helpers.formatErrors(err) });
+              return res.status(422).send({ error: helpers.formatErrors(err) });
             } else {
               return next(err);
             }
@@ -40,7 +40,7 @@ module.exports = {
           return res.status(200).send(session_users);
         });
       } else {
-        return res.status(200).send({ errors: "No session available" });
+        return res.status(404).send({ error: "No session available" });
       }
     });
 
@@ -49,7 +49,7 @@ module.exports = {
     req.models.session.find({key: req.params.key}, function (err, sessions) {
       if(err) {
         if(Array.isArray(err)) {
-          return res.status(422).send({ errors: helpers.formatErrors(err) });
+          return res.status(422).send({ error: helpers.formatErrors(err) });
         } else {
           return next(err);
         }
@@ -58,7 +58,7 @@ module.exports = {
         req.models.session_user.find({session_id: sessions[0].id, left: null}, function (err, session_users) {
           if(err) {
             if(Array.isArray(err)) {
-              return res.status(422).send({ errors: helpers.formatErrors(err) });
+              return res.status(422).send({ error: helpers.formatErrors(err) });
             } else {
               return next(err);
             }
@@ -66,7 +66,7 @@ module.exports = {
           return res.status(200).send(session_users);
         });
       } else {
-        return res.status(200).send({ errors: "No session available" });
+        return res.status(404).send({ error: "No session available" });
       }
     });
 
@@ -105,7 +105,7 @@ module.exports = {
     req.models.session_user.create(params, function (err, session_user) {
       if(err) {
         if(Array.isArray(err)) {
-          return res.status(422).send({ errors: helpers.formatErrors(err) });
+          return res.status(422).send({ error: helpers.formatErrors(err) });
         } else {
           return next(err);
         }
@@ -118,7 +118,7 @@ module.exports = {
     req.models.session_user.find({session_id: params.session_id, key: params.key}, function (err, session_user) {
       if(err) {
         if(Array.isArray(err)) {
-          return res.status(422).send({ errors: helpers.formatErrors(err) });
+          return res.status(422).send({ error: helpers.formatErrors(err) });
         } else {
           return next(err);
         }
@@ -127,7 +127,7 @@ module.exports = {
         session_user[0].left = new Date();
         session_user[0].save();
       } else {
-        return res.status(200).send({ errors: "No session available" });
+        return res.status(404).send({ error: "No session available" });
       }
 
 
