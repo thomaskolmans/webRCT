@@ -1,0 +1,20 @@
+version: '2.1'
+services:
+    mysql:
+        image: mysql
+        build: ./db
+        ports:
+            - '3307:3306'
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+        restart: always
+        healthcheck:
+            test: "exit 0"
+    
+    app:
+        build: .
+        depends_on:
+            mysql:
+                condition: service_healthy
+        ports:
+            - "80:8080"
