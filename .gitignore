@@ -3,3 +3,4 @@ node_modules/
 client/.sass-cache/bddcdad18aeda5b8706e1d1cd5da94a53f44166c/index.sassc
 client/dist/webrtc.js
 client/dist/
+client/.sass-cache/
