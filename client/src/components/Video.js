@@ -3,12 +3,12 @@ import React from 'react';
 import request from 'superagent';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { ScaleLoader } from 'react-spinners';
-import ReactTooltip from 'react-tooltip'
+import ReactTooltip from 'react-tooltip';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import hark from 'hark';
 
-import { BUSINESS_LOGO } from "babel-dotenv"
+import { BUSINESS_LOGO } from "babel-dotenv";
 
 export default class Video extends React.Component{
 
@@ -28,7 +28,8 @@ export default class Video extends React.Component{
 			fullscreen: false,
 			share_box: false,
 			controls: true
-		}
+		};
+
 		let getUserMedia = navigator.getUserMedia || navigator.mediaDevices.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 		if (getUserMedia) {
 			getUserMedia = getUserMedia.bind(navigator);
@@ -37,8 +38,11 @@ export default class Video extends React.Component{
 				position: toast.POSITION.TOP_LEFT
 			});	  
 		}
+		// Events
 		this.onUnload = this.onUnload.bind(this);
 		this.activity = this.activity.bind(this);
+		this.screenResize = this.screenResize.bind(this);
+
 		var _this = this;
 
 		this.state.peer.on('call', function(call){
@@ -279,7 +283,7 @@ export default class Video extends React.Component{
 					stream: stream
 				})
 			}
-
+			
 			var speechEvents = hark(stream, {})
 			speechEvents.on('speaking', function() {
 				console.log(id + ' is speaking');
@@ -336,9 +340,6 @@ export default class Video extends React.Component{
 	}
 
 	toggleFullscreen(){
-		this.setState({
-			fullscreen: !this.state.fullscreen
-		})
 		if ((document.fullScreenElement && document.fullScreenElement !== null) ||    
 		(!document.mozFullScreen && !document.webkitIsFullScreen)) {
 		 if (document.documentElement.requestFullScreen) {  
@@ -425,8 +426,10 @@ export default class Video extends React.Component{
 	componentDidMount(){
 		window.addEventListener("beforeunload", this.onUnload);
 		["mousemove", "touchmove", "keypress"].forEach(event => window.addEventListener(event,this.activity) );
+		["fullscreenchange", "webkitfullscreenchange", "mozfullscreenchange", "msfullscreenchange"].forEach(
+			event => document.addEventListener(event, this.screenResize)
+		);
         this.state.peer.on('open', () => {
-			console.log(this.state.peer.id);
             this.setState({user_key: this.state.peer.id});
         });
 	}
@@ -441,6 +444,35 @@ export default class Video extends React.Component{
 		if(controlsClassList.contains('hidden')){
 			controlsClassList.remove('hidden');
 			document.body.style.cursor = "default";
+		}
+		if(e.type === "keypress"){
+			switch(e.code){
+				case "KeyM":
+					this.toggleMute();
+				break;
+				case "KeyV":
+					this.toggleVideo();
+				break;
+				case "KeyF":
+					this.toggleFullscreen();
+				break;
+				case "KeyS":
+					this.toggleShare();
+				break;
+			}
+		}
+	}
+
+	screenResize(e){
+		if ((document.fullScreenElement && document.fullScreenElement !== null) ||    
+		(!document.mozFullScreen && !document.webkitIsFullScreen)) {
+			this.setState({
+				fullscreen: false
+			});
+		} else {
+			this.setState({
+				fullscreen: true
+			});
 		}
 	}
 

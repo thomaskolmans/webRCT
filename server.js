@@ -16,7 +16,7 @@ routes(app);
 server = app.listen(port);
 
 // Start peer server
-var expressPeerServer = ExpressPeerServer(server, {debug: true});
+var expressPeerServer = ExpressPeerServer(server, {debug: false});
 app.use('/peerjs', expressPeerServer);
 app.get("*", home);
 
