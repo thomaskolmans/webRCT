@@ -2,5 +2,6 @@
 	"presets":  ["env","react"],
 	"plugins": [["babel-plugin-dotenv", {
 		"replacedModuleName": "babel-dotenv"
-	 }], "emotion"]
+	 }], "emotion", "transform-es2015-destructuring"]
+
 }

@@ -87,10 +87,24 @@ body
         left: 50%
         transform: translate(-50%,-50%)
     .logo
+        &.BOTTOM_LEFT
+            img
+                left: 10px
+                bottom: 10px
+        &.BOTTOM_RIGHT
+            img
+                right: 10px
+                bottom: 10px
+        &.TOP_LEFT
+            img
+                left: 10px
+                top: 10px
+        &.TOP_RIGHT
+            img
+                right: 10px
+                top: 10px
         img
             position: absolute
-            left: 10px
-            bottom: 10px
             width: 20%
             max-width: 200px
             min-width: 100px

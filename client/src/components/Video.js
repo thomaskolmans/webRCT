@@ -8,7 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import hark from 'hark';
 
-import { BUSINESS_LOGO } from "babel-dotenv";
+import { BUSINESS_LOGO, BUSINESS_LOGO_PLACE } from "babel-dotenv";
 
 export default class Video extends React.Component{
 
@@ -70,7 +70,9 @@ export default class Video extends React.Component{
 					document.body.style.cursor = "none";
 				}
 			}
-		}, 2000)
+		}, 2000);
+
+		console.log(BUSINESS_LOGO_PLACE)
 	}
 
 	guid() {
@@ -482,7 +484,7 @@ export default class Video extends React.Component{
 			if(this.state.users.length < 1 && response.body.length > 1){
 				this.endSessionRequest();
 			}
-		})
+		});
 	}
 	
 	render(){
@@ -521,11 +523,11 @@ export default class Video extends React.Component{
 						<div className={"button full " + (this.state.fullscreen ? 'active' : '')} data-tip={(this.state.fullscreen ? 'Exit full screen' : 'Full screen')}onClick={(e) => this.toggleFullscreen(e)}></div>
 						<ReactTooltip place="top" type="dark" effect="solid"  html={true}  multiline={false} />
 					</div>
-					<div className="logo"><img src={BUSINESS_LOGO} /></div>
+					<div className={"logo " + BUSINESS_LOGO_PLACE}><img src={BUSINESS_LOGO} /></div>
 				</div>
 				<div className={"loading " + (this.state.loading ? 'active' : '')}>
 					<ScaleLoader className="loader" sizeUnit={"px"} size={150} color={'white'}l oading={true} />
-					<div className="logo"><img src={BUSINESS_LOGO} /></div>
+					<div className={"logo " + BUSINESS_LOGO_PLACE}><img src={BUSINESS_LOGO} /></div>
 				</div> 
 				<ToastContainer autoClose={3000} />
 			</div>

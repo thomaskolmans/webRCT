@@ -157,13 +157,28 @@
                     +transition($s)
     .logo
         z-index: 100
+        &.BOTTOM_LEFT
+            img
+                left: 10px
+                bottom: 10px
+        &.BOTTOM_RIGHT
+            img
+                right: 10px
+                bottom: 10px
+        &.TOP_LEFT
+            img
+                left: 10px
+                top: 10px
+        &.TOP_RIGHT
+            img
+                right: 10px
+                top: 10px
         img
             position: absolute
-            left: 10px
-            bottom: 10px
             width: 20%
             max-width: 200px
             min-width: 100px
+            max-height: 150px
             height: auto
-            max-height: 200px
+            object-fit: contain
     
