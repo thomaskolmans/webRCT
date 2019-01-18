@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config();
 var path        = require('path');
 var settings    = require('./api/config/settings');
 var environment = require('./api/config/environment');
@@ -7,7 +7,7 @@ var home = require('./api/controllers/homeController');
 var ExpressPeerServer = require('peer').ExpressPeerServer;
 var express = require('express'),
   app = express(),
-  port = process.env.PORT || 3000 //created model loading here
+  port = process.env.PORT || 3000; //created model loading here
   
 var routes = require('./api/routes/routes');
 environment(app);

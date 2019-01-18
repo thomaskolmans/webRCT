@@ -7,6 +7,9 @@ import ReactTooltip from 'react-tooltip';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import hark from 'hark';
+import update, { extend } from 'immutability-helper';
+
+import ControlsContainer from '../containers/ControlsContainer';
 
 import { BUSINESS_LOGO, BUSINESS_LOGO_PLACE } from "babel-dotenv";
 
@@ -38,6 +41,7 @@ export default class Video extends React.Component{
 				position: toast.POSITION.TOP_LEFT
 			});	  
 		}
+
 		// Events
 		this.onUnload = this.onUnload.bind(this);
 		this.activity = this.activity.bind(this);
@@ -54,13 +58,14 @@ export default class Video extends React.Component{
 				});
 			});
 		});
+
 		this.state.peer.on('error', function(err){
 			toast.error(err.message, {
 				position: toast.POSITION.TOP_LEFT
 			});	  
 		});
 
-		this.idleTime = 0
+		this.idleTime = 0;
 		setInterval(() => {
 			this.idleTime = this.idleTime + 1
 			if(this.idleTime > 1) {
@@ -71,13 +76,11 @@ export default class Video extends React.Component{
 				}
 			}
 		}, 2000);
-
-		console.log(BUSINESS_LOGO_PLACE)
 	}
 
 	guid() {
 		var S4 = function() {
-		   return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+			return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
 		};
 		return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
 	}
@@ -92,12 +95,12 @@ export default class Video extends React.Component{
 					height: {ideal: 720, max: 1080 }
 			  	}
 			}, function(stream){
-				let previousStreams = _this.state.streams
+				let previousStreams = _this.state.streams;
 				previousStreams.push({
 					key: _this.state.user_key,
 					loading: true,
 					stream: stream
-				})
+				});
 				_this.setState({
 					streams: previousStreams,
 					loading: false
@@ -252,7 +255,7 @@ export default class Video extends React.Component{
 	callUsers(){
 		this.state.users.map( user => {
 			this.call(user.key);
-		})
+		});
 	}
 
 	call(id){
@@ -263,7 +266,7 @@ export default class Video extends React.Component{
 
 	answerCall(call, id){
 		call.on('stream', stream => {
-			let previousStreams = this.state.streams
+			let previousStreams = this.state.streams;
 			let index = -1;
 			var counter = 0;
 			previousStreams.forEach(el => {
@@ -283,7 +286,7 @@ export default class Video extends React.Component{
 					key: id,
 					loading: true,
 					stream: stream
-				})
+				});
 			}
 			
 			var speechEvents = hark(stream, {})
@@ -300,7 +303,7 @@ export default class Video extends React.Component{
 			});
 		});
 		call.on('close', _ => {
-			let previousStreams = this.state.streams
+			let previousStreams = this.state.streams;
 			let index = -1;
 			var counter = 0;
 			previousStreams.forEach(el => {
@@ -318,7 +321,7 @@ export default class Video extends React.Component{
 					users: response.body.filter(el => { return el.key != this.state.user_key })
 				});
 			});
-		})
+		});
 	}
 
 	findStream(key){
@@ -326,18 +329,18 @@ export default class Video extends React.Component{
 	}
 
 	toggleMute(){
-		let me = this.state.streams[0]
-		me.stream.getAudioTracks()[0].enabled = this.state.muted
+		let myStream = this.state.streams[0];
+		myStream.stream.getAudioTracks()[0].enabled = this.state.muted;
 		this.setState({
-			muted: !this.state.muted
+			muted: !this.state.muted,
 		});
 	}
 
 	toggleVideo(){
-		let me = this.state.streams[0]
-		me.stream.getVideoTracks()[0].enabled = !this.state.video
+		let myStream = this.state.streams[0];
+		myStream.stream.getVideoTracks()[0].enabled = !this.state.video;
 		this.setState({
-			video: !this.state.video
+			video: !this.state.video,
 		});
 	}
 
@@ -387,8 +390,8 @@ export default class Video extends React.Component{
 
 		if(prevState.streams == this.state.streams){
 			this.state.streams.forEach(stream => {
-				let previousStreams = this.state.streams
-				let video = document.getElementById(stream.key)
+				let previousStreams = this.state.streams;
+				let video = document.getElementById(stream.key);
 				let _this = this;
 				try {
 					video.srcObject = stream.stream;
@@ -399,7 +402,7 @@ export default class Video extends React.Component{
 				video.play();
 				video.addEventListener('loadeddata', function(){
 					video.play();
-					let previousStreamState = null
+					let previousStreamState = null;
 					let index = 0;
 					var counter = 0;
 					previousStreams.forEach( el => {
@@ -414,10 +417,10 @@ export default class Video extends React.Component{
 							key: previousStreamState.key,
 							loading: false,
 							stream: previousStreamState.stream
-						}
+						};
 						_this.setState({
 							streams: previousStreams
-						})
+						});
 					}
 				}, false);
 				window.localStream = stream.stream;
@@ -523,10 +526,10 @@ export default class Video extends React.Component{
 						<div className={"button full " + (this.state.fullscreen ? 'active' : '')} data-tip={(this.state.fullscreen ? 'Exit full screen' : 'Full screen')}onClick={(e) => this.toggleFullscreen(e)}></div>
 						<ReactTooltip place="top" type="dark" effect="solid"  html={true}  multiline={false} />
 					</div>
-					<div className={"logo " + BUSINESS_LOGO_PLACE}><img src={BUSINESS_LOGO} /></div>
+					<img className={"logo " + BUSINESS_LOGO_PLACE} src={BUSINESS_LOGO} />
 				</div>
 				<div className={"loading " + (this.state.loading ? 'active' : '')}>
-					<ScaleLoader className="loader" sizeUnit={"px"} size={150} color={'white'}l oading={true} />
+					<ScaleLoader className="loader" sizeUnit={"px"} size={150} color={'white'} loading={true} />
 					<div className={"logo " + BUSINESS_LOGO_PLACE}><img src={BUSINESS_LOGO} /></div>
 				</div> 
 				<ToastContainer autoClose={3000} />

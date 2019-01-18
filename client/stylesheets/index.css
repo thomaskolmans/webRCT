@@ -107,25 +107,27 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%); }
-  .loading .logo.BOTTOM_LEFT img {
-    left: 10px;
-    bottom: 10px; }
-  .loading .logo.BOTTOM_RIGHT img {
-    right: 10px;
-    bottom: 10px; }
-  .loading .logo.TOP_LEFT img {
-    left: 10px;
-    top: 10px; }
-  .loading .logo.TOP_RIGHT img {
-    right: 10px;
-    top: 10px; }
-  .loading .logo img {
-    position: absolute;
-    width: 20%;
-    max-width: 200px;
-    min-width: 100px;
-    height: auto;
-    max-height: 200px; }
+  .loading .logo {
+    z-index: 100; }
+    .loading .logo.BOTTOM_LEFT img {
+      left: 10px;
+      bottom: 10px; }
+    .loading .logo.BOTTOM_RIGHT img {
+      right: 10px;
+      bottom: 10px; }
+    .loading .logo.TOP_LEFT img {
+      left: 10px;
+      top: 10px; }
+    .loading .logo.TOP_RIGHT img {
+      right: 10px;
+      top: 10px; }
+    .loading .logo img {
+      position: absolute;
+      width: 20%;
+      max-width: 200px;
+      min-width: 100px;
+      height: auto;
+      max-height: 200px; }
 
 .__react_component_tooltip {
   font-family: sans-serif;
@@ -193,7 +195,7 @@ body {
         transform: translate(-50%, -50%); }
 .video .controls {
   position: absolute;
-  bottom: 5vh;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
@@ -294,27 +296,26 @@ body {
         color: #232323;
         transition: 0.4s;
         -webkit-transition: 0.4s; }
-.video .logo {
+.video img.logo {
+  position: absolute;
+  width: 20%;
+  max-width: 200px;
+  min-width: 100px;
+  max-height: 150px;
+  height: auto;
+  object-fit: contain;
   z-index: 100; }
-  .video .logo.BOTTOM_LEFT img {
+  .video img.logo.BOTTOM_LEFT {
     left: 10px;
     bottom: 10px; }
-  .video .logo.BOTTOM_RIGHT img {
+  .video img.logo.BOTTOM_RIGHT {
     right: 10px;
     bottom: 10px; }
-  .video .logo.TOP_LEFT img {
+  .video img.logo.TOP_LEFT {
     left: 10px;
     top: 10px; }
-  .video .logo.TOP_RIGHT img {
+  .video img.logo.TOP_RIGHT {
     right: 10px;
     top: 10px; }
-  .video .logo img {
-    position: absolute;
-    width: 20%;
-    max-width: 200px;
-    min-width: 100px;
-    max-height: 150px;
-    height: auto;
-    object-fit: contain; }
 
 /*# sourceMappingURL=index.css.map */

@@ -2,6 +2,6 @@
 	"presets":  ["env","react"],
 	"plugins": [["babel-plugin-dotenv", {
 		"replacedModuleName": "babel-dotenv"
-	 }], "emotion", "transform-es2015-destructuring"]
+	 }], "emotion", "transform-es2015-destructuring",  "transform-object-rest-spread"]
 
 }

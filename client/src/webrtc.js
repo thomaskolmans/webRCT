@@ -1,13 +1,17 @@
-require('dotenv').config()
+require('dotenv').config();
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider}  from 'react-redux';
 import MetaTags from 'react-meta-tags';
 import {BrowserRouter, BrowserHistory, matchPath, Switch, Route, Link} from 'react-router-dom';
 import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
 import Video from './components/Video';
-import {BUSINESS_NAME, BUSINESS_LOGO_SQUARE} from "babel-dotenv"
+import {BUSINESS_NAME, BUSINESS_LOGO_SQUARE} from "babel-dotenv";
 
+import configureStore from './store/configureStore.js';
+
+const store = configureStore();
 
 export default class WebRTC extends React.Component{
 
@@ -17,20 +21,22 @@ export default class WebRTC extends React.Component{
     
 	render(){
 		return (
-			<BrowserRouter history={BrowserHistory}>
-                <Route render={({ location }) => (
-                    <div className="background">
-                        <TransitionGroup>
-                            <CSSTransition key={location.key} classNames="pagefade" timeout={300}>
-                                <Switch location={location}>
-								    <Route exact path="/" component={PageShell(Video)} key="video" />
-								    <Route exact path="/:key" component={PageShell(Video)} key="video" />
-                                </Switch>
-                            </CSSTransition>
-                        </TransitionGroup>
-                    </div>
-                )}/>
-			</BrowserRouter>
+			<Provider store={store}>
+				<BrowserRouter history={BrowserHistory}>
+					<Route render={({ location }) => (
+						<div className="background">
+							<TransitionGroup>
+								<CSSTransition key={location.key} classNames="pagefade" timeout={300}>
+									<Switch location={location} >
+										<Route exact path="/" component={PageShell(Video)} key="video" />
+										<Route exact path="/:key" component={PageShell(Video)} key="video" />
+									</Switch>
+								</CSSTransition>
+							</TransitionGroup>
+						</div>
+					)}/>
+				</BrowserRouter>
+			</Provider>
  		);
 	}
 }
@@ -57,7 +63,7 @@ class BasicTags extends React.Component{
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<link rel="shortcut icon" href={BUSINESS_LOGO_SQUARE} />
 			</MetaTags>
-		)
+		);
 	}
 }
 
