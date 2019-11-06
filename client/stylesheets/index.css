@@ -136,12 +136,11 @@ body {
 .video .streams {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap; }
+  flex-wrap: wrap;
+  height: 100vh; }
   .video .streams .video-content {
     background: #232323;
-    min-width: 250px;
-    min-height: 350px;
-    height: 100vh;
+    min-width: 350px;
     flex: 1;
     overflow: hidden;
     position: relative; }
@@ -173,33 +172,12 @@ body {
         display: block;
         transition: 0.4s;
         -webkit-transition: 0.4s; }
-    .video .streams .video-content .loading {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      z-index: 1000;
-      background: #232323;
-      display: none;
-      transition: 0.4s;
-      -webkit-transition: 0.4s; }
-      .video .streams .video-content .loading.active {
-        display: block;
-        transition: 0.4s;
-        -webkit-transition: 0.4s; }
-      .video .streams .video-content .loading .loader {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%); }
 .video .controls {
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
-  background: rgba(0, 0, 0, 0.6);
   display: flex;
   z-index: 100;
   -webkit-animation: pop-in-controls 0.6s;
@@ -219,7 +197,7 @@ body {
     -webkit-transition: 0.4s; }
   .video .controls .share-box {
     position: absolute;
-    bottom: 10vh;
+    bottom: calc(10vh + 25px);
     min-width: 100%;
     max-width: 300px;
     background: white;
@@ -254,14 +232,17 @@ body {
       text-align: center; }
   .video .controls .button {
     height: 8vh;
-    width: 10vh;
+    width: 8vh;
+    margin: 25px 0.4vh;
+    border-radius: 50%;
     flex: 1;
     background: none;
     position: relative;
+    background: rgba(0, 0, 0, 0.4);
     transition: 0.4s;
     -webkit-transition: 0.4s; }
     .video .controls .button:hover {
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.8);
       cursor: pointer;
       transition: 0.4s;
       -webkit-transition: 0.4s; }
@@ -269,7 +250,7 @@ body {
       content: "";
       color: white;
       font-family: "FontAwesome";
-      font-size: 3vh;
+      font-size: 2.5vh;
       position: absolute;
       top: 50%;
       left: 50%;

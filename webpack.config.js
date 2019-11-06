@@ -3,15 +3,31 @@ const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
 
 module.exports = {
+	mode: 'development',
 	entry: {
 		"bundle": "./client/src/webrtc.js",
 		"bundle.min": "./client/src/webrtc.js"
 	},
 	output: {
-	    filename: "client/dist/[name].js"
+		path: path.resolve(__dirname, 'client/dist'),
+	    filename: "[name].js"
 	},
 	node: {
 		fs: 'empty'
+	},
+	devServer: {
+		contentBase: "./client",
+	    historyApiFallback: {
+	      index: 'index.html'
+		},
+		port: 8085,
+		hot: true,
+	    proxy: {
+			'/session': {
+				target: 'http://localhost:8080',
+				secure: false
+			}
+	    }
 	},
 	module: {
 	  rules: [

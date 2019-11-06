@@ -10,6 +10,19 @@ const initialState = {
 };
 
 export default function controls(state = initialState, action) {
-
+    switch(action.type){
+        // case types.TOGGLE_MUTE:
+        //     return {
+        //         ...state,
+        //         muted: !state.muted
+        //     };
+        // break;
+        // case types.TOGGLE_VIDEO:
+        //     return {
+        //         ...state,
+        //         video: !state.video
+        //     };
+        // break;
+    }
     return state;
 }

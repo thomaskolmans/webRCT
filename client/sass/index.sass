@@ -5,11 +5,10 @@
         display: flex
         flex-direction: row
         flex-wrap: wrap
+        height: 100vh
         .video-content
             background: $black
-            min-width: 250px
-            min-height: 350px
-            height: 100vh
+            min-width: 350px
             flex: 1
             overflow: hidden
             position: relative
@@ -39,24 +38,6 @@
                 &.active
                     display: block
                     +transition($s)
-            .loading
-                position: absolute
-                top: 0
-                left: 0
-                height: 100%
-                width: 100%
-                z-index: 1000
-                background: $black
-                display: none
-                +transition($s)
-                &.active
-                    display: block
-                    +transition($s)
-                .loader
-                    position: absolute
-                    top: 50%
-                    left: 50%
-                    transform: translate(-50%,-50%)
 
     .controls
         position: absolute
@@ -64,7 +45,7 @@
         left: 50%
         transform: translateX(-50%)
         text-align: center
-        background: rgba(0,0,0,0.6)
+        // background: rgba(0,0,0,0.6)
         display: flex
         z-index: 100
         +animation(pop-in-controls 0.6s)
@@ -76,7 +57,7 @@
             +transition($s)
         .share-box
             position: absolute
-            bottom: 10vh
+            bottom: calc(10vh + 25px)
             min-width: 100%
             max-width: 300px
             background: $white
@@ -111,13 +92,16 @@
                 
         .button
             height: 8vh
-            width: 10vh
+            width: 8vh
+            margin: 25px .4vh
+            border-radius: 50%
             flex: 1
             background: none
             position: relative
+            background: rgba(0,0,0,0.4)
             +transition($s)
             &:hover
-                background: rgba(0,0,0,0.6)
+                background: rgba(0,0,0,0.8)
                 cursor: pointer
                 +transition($s)
             &::before
@@ -125,7 +109,7 @@
                 color: $white
                 font:
                     family: "FontAwesome"
-                    size: 3vh
+                    size: 2.5vh
                 position: absolute
                 top: 50%
                 left: 50%
@@ -176,5 +160,3 @@
         &.TOP_RIGHT
             right: 10px
             top: 10px
-
-    

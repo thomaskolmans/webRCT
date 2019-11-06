@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider}  from 'react-redux';
@@ -6,7 +7,7 @@ import MetaTags from 'react-meta-tags';
 import {BrowserRouter, BrowserHistory, matchPath, Switch, Route, Link} from 'react-router-dom';
 import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
-import Video from './components/Video';
+import VideoContainer from './containers/VideoContainer';
 import {BUSINESS_NAME, BUSINESS_LOGO_SQUARE} from "babel-dotenv";
 
 import configureStore from './store/configureStore.js';
@@ -17,7 +18,7 @@ export default class WebRTC extends React.Component{
 
 	constructor(props){
 		super(props);
-    }
+	}
     
 	render(){
 		return (
@@ -28,8 +29,8 @@ export default class WebRTC extends React.Component{
 							<TransitionGroup>
 								<CSSTransition key={location.key} classNames="pagefade" timeout={300}>
 									<Switch location={location} >
-										<Route exact path="/" component={PageShell(Video)} key="video" />
-										<Route exact path="/:key" component={PageShell(Video)} key="video" />
+										<Route exact path="/" component={PageShell(VideoContainer)} key="video" />
+										<Route exact path="/:key" component={PageShell(VideoContainer)} key="video" />
 									</Switch>
 								</CSSTransition>
 							</TransitionGroup>
@@ -58,7 +59,8 @@ class BasicTags extends React.Component{
 			    <meta property="og:title" content={BUSINESS_NAME} />
 			    <meta property="og:site_name" content={BUSINESS_NAME} />
 			    <meta itemProp="name" content={BUSINESS_NAME} />
-
+				<meta property="description">Simple videoconferencing of {BUSINESS_NAME}</meta>
+				<meta property="og:description">Simple videoconferencing of {BUSINESS_NAME}</meta>
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<link rel="shortcut icon" href={BUSINESS_LOGO_SQUARE} />
@@ -67,4 +69,4 @@ class BasicTags extends React.Component{
 	}
 }
 
-ReactDOM.render(<WebRTC />,document.getElementById("webrtc"));
+ReactDOM.render(<WebRTC />, document.getElementById("webrtc"));

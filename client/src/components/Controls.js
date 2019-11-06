@@ -1,15 +1,16 @@
-import Peer from 'peerjs';
-import React from 'react';
-import request from 'superagent';
+import React, { Component } from 'react';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
+import ReactTooltip from 'react-tooltip';
+import { ToastContainer, toast } from 'react-toastify';
 
-
-export default class Controls extends React.Component {
+export default class Controls extends Component {
 
 	constructor(props){
 		super(props);
 
 		this.state = {
-			controls: true
+			controls: true,
+			fullscreen: false
 		};
 
 		this.activity = this.activity.bind(this);
@@ -28,6 +29,7 @@ export default class Controls extends React.Component {
 		}, 2000);
 
 	}
+
 	toggleMute(){
 		let me = this.state.streams[0];
 		if (!this.state.muted){
@@ -75,13 +77,26 @@ export default class Controls extends React.Component {
 	   }
 	}
 
+	screenResize(e){
+		if ((document.fullScreenElement && document.fullScreenElement !== null) ||    
+		(!document.mozFullScreen && !document.webkitIsFullScreen)) {
+			this.setState({
+				fullscreen: false
+			});
+		} else {
+			this.setState({
+				fullscreen: true
+			});
+		}
+	}
+
 	toggleShare(){
 		this.setState({
 			share_box: !this.state.share_box
 		});
-    }
+	}
     
-    activity(e){
+	activity(e){
 		this.idleTime = 0;
 		let controlsClassList = document.getElementById('controls').classList;
 		if(controlsClassList.contains('hidden')){
@@ -104,30 +119,40 @@ export default class Controls extends React.Component {
 				break;
 			}
 		}
-    }
+	}
+
+	componentDidMount() {
+		["mousemove", "touchmove", "keypress"].forEach(
+			event => window.addEventListener(event,this.activity) 
+		);
+		
+		["fullscreenchange", "webkitfullscreenchange", "mozfullscreenchange", "msfullscreenchange"].forEach(
+			event => document.addEventListener(event, this.screenResize)
+		);
+	}
     
-    render(){
-        return (
-            <div className={"controls"} id="controls">
-                <div className={"share-box " + (this.state.share_box ? 'active' : 'hidden')}>
-                    <h2>Share this link</h2>
-                    <input type="text" value={window.location} readOnly></input>
-                    <CopyToClipboard text={window.location} 
-                        onCopy={() => {
-                            this.setState({share_box: false});
-                            toast.success("Succesfully copied URL!", {
-                                position: toast.POSITION.TOP_LEFT
-                            });		
-                        }} >
-                        <button>Copy</button>
-                    </CopyToClipboard>
-                </div>
-                <div className={"button mute " + (this.state.muted ? 'active' : '')} data-tip={(this.state.muted ? 'Unmute' : 'Mute')} onClick={(e) => this.toggleMute(e)}></div>
-                <div className={"button video " + (this.state.video ? '' : 'active')} data-tip={(this.state.video ? 'Hide video' : 'Show video')} onClick={(e) => this.toggleVideo(e)}></div>
-                <div className={"button share " + (this.state.share_box ? 'active' : '')} data-tip="Share" onClick={(e) => this.toggleShare(e)}></div>
-                <div className={"button full " + (this.state.fullscreen ? 'active' : '')} data-tip={(this.state.fullscreen ? 'Exit full screen' : 'Full screen')}onClick={(e) => this.toggleFullscreen(e)}></div>
-                <ReactTooltip place="top" type="dark" effect="solid"  html={true}  multiline={false} />
-            </div>
-        );
-    }
+	render(){
+		return (
+			<div className={"controls"} id="controls">
+				<div className={"share-box " + (this.state.share_box ? 'active' : 'hidden')}>
+					<h2>Share this link</h2>
+					<input type="text" value={window.location} readOnly></input>
+					<CopyToClipboard text={window.location} 
+							onCopy={() => {
+									this.setState({share_box: false});
+									toast.success("Succesfully copied URL!", {
+										position: toast.POSITION.TOP_LEFT
+									});		
+							}} >
+							<button>Copy</button>
+					</CopyToClipboard>
+				</div>
+				<div className={"button mute " + (this.props.muted ? 'active' : '')} data-tip={(this.props.muted ? 'Unmute' : 'Mute')} onClick={(e) => this.toggleMute(e)}></div>
+				<div className={"button video " + (this.props.video ? '' : 'active')} data-tip={(this.props.video ? 'Hide video' : 'Show video')} onClick={(e) => this.toggleVideo(e)}></div>
+				<div className={"button share " + (this.state.share_box ? 'active' : '')} data-tip="Share" onClick={(e) => this.toggleShare(e)}></div>
+				<div className={"button full " + (this.state.fullscreen ? 'active' : '')} data-tip={(this.state.fullscreen ? 'Exit full screen' : 'Full screen')}onClick={(e) => this.toggleFullscreen(e)}></div>
+				<ReactTooltip place="top" type="dark" effect="solid"  html={true}  multiline={false} />
+			</div>
+		);
+	}
 }
