@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+import Peer from 'peerjs';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider}  from 'react-redux';
@@ -13,7 +14,7 @@ import {BUSINESS_NAME, BUSINESS_LOGO_SQUARE} from "babel-dotenv";
 import configureStore from './store/configureStore.js';
 
 const store = configureStore();
-
+const peer = new Peer({host: location.hostname, port: location.port, path: '/peerjs', proxied: true, debug: 3});
 export default class WebRTC extends React.Component{
 
 	constructor(props){
@@ -30,7 +31,7 @@ export default class WebRTC extends React.Component{
 								<CSSTransition key={location.key} classNames="pagefade" timeout={300}>
 									<Switch location={location} >
 										<Route exact path="/" component={PageShell(VideoContainer)} key="video" />
-										<Route exact path="/:key" component={PageShell(VideoContainer)} key="video" />
+										<Route exact path="/:key" component={PageShell(VideoContainer)} key="video_with_keym" />
 									</Switch>
 								</CSSTransition>
 							</TransitionGroup>
@@ -41,14 +42,14 @@ export default class WebRTC extends React.Component{
  		);
 	}
 }
+
 const PageShell = Page => { 
     return props =>
 		<div className="page">
 			<BasicTags />
-			<Page {...props} />
+			<Page peer={peer} {...props} />
 		</div>
 };
-
 
 class BasicTags extends React.Component{
 	render(){
@@ -59,8 +60,8 @@ class BasicTags extends React.Component{
 			    <meta property="og:title" content={BUSINESS_NAME} />
 			    <meta property="og:site_name" content={BUSINESS_NAME} />
 			    <meta itemProp="name" content={BUSINESS_NAME} />
-				<meta property="description">Simple videoconferencing of {BUSINESS_NAME}</meta>
-				<meta property="og:description">Simple videoconferencing of {BUSINESS_NAME}</meta>
+				<meta property="description" content={"Simple videoconferencing of" + BUSINESS_NAME}/>
+				<meta property="og:description" content={"Simple videoconferencing of" + BUSINESS_NAME} />
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<link rel="shortcut icon" href={BUSINESS_LOGO_SQUARE} />

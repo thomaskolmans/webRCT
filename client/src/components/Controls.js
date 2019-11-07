@@ -31,29 +31,11 @@ export default class Controls extends Component {
 	}
 
 	toggleMute(){
-		let me = this.state.streams[0];
-		if (!this.state.muted){
-			me.stream.getAudioTracks()[0].stop();
-		} else {
-			me.stream.getAudioTracks()[0].start();
-		}
-		me.stream.getAudioTracks()[0].enabled = this.state.muted;
-		this.setState({
-			muted: !this.state.muted
-		});
+		this.props.toggleMute()
 	}
 
 	toggleVideo(){
-		let me = this.state.streams[0];
-		if (this.state.video){
-			me.stream.getVideoTracks()[0].stop();
-		} else {
-			me.stream.getVideoTracks()[0].start();
-		}
-		me.stream.getVideoTracks()[0].enabled = !this.state.video;
-		this.setState({
-			video: !this.state.video
-		});
+		this.props.toggleVideo();
 	}
 
 	toggleFullscreen(){
@@ -125,7 +107,6 @@ export default class Controls extends Component {
 		["mousemove", "touchmove", "keypress"].forEach(
 			event => window.addEventListener(event,this.activity) 
 		);
-		
 		["fullscreenchange", "webkitfullscreenchange", "mozfullscreenchange", "msfullscreenchange"].forEach(
 			event => document.addEventListener(event, this.screenResize)
 		);

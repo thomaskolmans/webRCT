@@ -5,6 +5,11 @@ import * as sessionActions from '../actions/sessionActions';
 
 class VideoContainer extends Component {
 
+  constructor(props){
+    super(props);
+
+  }
+
   render() {
     const {
       getSession,
@@ -13,10 +18,16 @@ class VideoContainer extends Component {
       joinSession,
       leaveSession,
       activeUsers,
-      users,
+      getUsers,
+      setUserKey,
+      addStream,
+      updateStream,
+      updateStreamElement,
+      removeStream,
       ...props
     } = this.props;
   
+    
     return (
         <Video
           {...props}
@@ -26,8 +37,12 @@ class VideoContainer extends Component {
           joinSession={(id, key) => joinSession(id, key)}
           leaveSession={(id, key) => leaveSession(id, key)}
           activeUsers={(id) => activeUsers(id)}
-          users={(id) => users(id)}
+          getUsers={(id) => getUsers(id)}
           setUserKey={(key) => setUserKey(key)}
+          addStream={(stream) => addStream(stream)}
+          updateStream={(stream) => updateStream(stream)}
+          updateStreamElement={(key, element) => updateStreamElement(key, element)}
+          removeStream={(stream) => removeStream(stream)}
         />
     );
   }
@@ -35,7 +50,13 @@ class VideoContainer extends Component {
 
 function mapStateToProps(state, ownProps) {
   return {
-    key: state.video.key
+    video: state.controls.video,
+    muted: state.controls.muted,
+    streamKey: state.video.key,
+    isLoadingSession: state.video.isLoadingSession,
+    session: state.video.session,
+    users: state.video.users,
+    streams: state.video.streams
   };
 }
 
@@ -47,8 +68,13 @@ function mapDispatchToProps(dispatch) {
     joinSession: (id, key) => dispatch(sessionActions.joinSession(id, key)),
     leaveSession: (id, key) => dispatch(sessionActions.leaveSession(id, key)),
     activeUsers: (id) => dispatch(sessionActions.activeUsers(id)),
-    users: (id) => dispatch(sessionActions.users(id)),
-    setUserKey: (key) => dispatch(sessionActions.setUserKey(key))
+    getUsers: (id) => dispatch(sessionActions.users(id)),
+    setUserKey: (key) => dispatch(sessionActions.setUserKey(key)),
+    addStream: (stream) => dispatch(sessionActions.addStream(stream)),
+    updateStream: (stream) => dispatch(sessionActions.updateStream(stream)),
+    updateStreamElement: (key, element) => dispatch(sessionActions.updateStreamElement(key, element)),
+    removeStream: (stream) => dispatch(sessionActions.removeStream(stream))
+
   };
 }
 export default connect(

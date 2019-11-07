@@ -7,7 +7,7 @@ export const getSessionStart = () => ({
 
 export const getSessionSuccess = (result) => ({
     type: types.GET_SESSION_SUCCESS,
-    ...result
+    session: result
 });
 
 export const getSessionFailure = (error) => ({
@@ -37,7 +37,7 @@ export const createSessionStart = () => ({
 
 export const createSessionSuccess = (result) => ({
     type: types.CREATE_SESSION_SUCCESS,
-    ...result
+    session: result
 });
 
 export const createSessionFailure = (error) => ({
@@ -96,7 +96,7 @@ export const joinSessionStart = () => ({
 
 export const joinSessionSuccess = (result) => ({
     type: types.JOIN_SESSION_SUCCESS,
-    ...result
+    session: result
 });
 
 export const joinSessionFailure = (error) => ({
@@ -155,7 +155,7 @@ export const getActiveUsersStart = () => ({
 
 export const getActiveUsersSuccess = (result) => ({
     type: types.GET_ACTIVE_USERS_SUCCESS,
-    ...result
+    users: result
 });
 
 export const getActiveUsersFailure = (error) => ({
@@ -184,7 +184,7 @@ export const getUsersStart = () => ({
 
 export const getUsersSuccess = (result) => ({
     type: types.GET_USERS_SUCCESS,
-    ...result
+    users: result
 });
 
 export const getUsersFailure = (error) => ({
@@ -211,3 +211,24 @@ export const setUserKey = (key) => ({
     type: types.SET_USER_KEY,
     key: key
 });
+
+export const addStream = (stream) => ({
+    type: types.ADD_STREAM,
+    stream: stream
+});
+
+export const updateStream = (stream) => ({
+    type: types.UPDATE_STREAM,
+    stream: stream
+});
+
+export const updateStreamElement = (key, element) => ({
+    type: types.UPDATE_STREAM_ELEMENT,
+    key: key, 
+    element: element
+});
+
+export const removeStream = (key) => ({
+    type: types.REMOVE_STREAM,
+    key: key
+})

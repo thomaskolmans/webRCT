@@ -15,7 +15,7 @@ module.exports = {
       if (session.length > 0){
         return res.status(200).send(session[0].serialize());
       } else {
-        return res.status(404).send({ error: "No session available" });
+        return res.status(404).send({ error: "No session available for" });
       }
     });
   },
@@ -110,7 +110,20 @@ module.exports = {
           return next(err);
         }
       }
-      return res.status(200).send(session_user.serialize());
+      req.models.session.find({id: params.session_id, ended: null}, function (err, session) {
+        if(err) {
+          if(Array.isArray(err)) {
+            return res.status(422).send({ error: helpers.formatErrors(err) });
+          } else {
+            return next(err);
+          }
+        }
+        if (session.length > 0){
+          return res.status(200).send(session[0].serialize());
+        } else {
+          return res.status(404).send({ error: "No session available"});
+        }
+      });
     });
   },
   leave: function (req, res, next) {

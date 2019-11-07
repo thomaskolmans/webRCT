@@ -92,7 +92,7 @@ body {
   top: 0;
   left: 0;
   height: 100vh;
-  width: 100vw;
+  width: 100%;
   z-index: 1000;
   background: #232323;
   display: none;
