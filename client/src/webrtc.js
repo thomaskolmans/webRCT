@@ -15,6 +15,8 @@ import configureStore from './store/configureStore.js';
 
 const store = configureStore();
 const peer = new Peer({host: location.hostname, port: location.port, path: '/peerjs', proxied: true, debug: 3});
+window.sockets = [];
+
 export default class WebRTC extends React.Component{
 
 	constructor(props){
@@ -47,7 +49,7 @@ const PageShell = Page => {
     return props =>
 		<div className="page">
 			<BasicTags />
-			<Page peer={peer} {...props} />
+			<Page peer={peer} sockets={sockets} {...props} />
 		</div>
 };
 

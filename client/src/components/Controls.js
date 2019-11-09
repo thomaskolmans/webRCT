@@ -32,10 +32,20 @@ export default class Controls extends Component {
 
 	toggleMute(){
 		this.props.toggleMute()
+		this.props.sendMessage(JSON.stringify({
+			type: "STREAM_UPDATE",
+			key: this.props.streamKey,
+			value: { muted: !this.props.muted }
+		}))
 	}
 
 	toggleVideo(){
 		this.props.toggleVideo();
+		this.props.sendMessage(JSON.stringify({
+			type: "STREAM_UPDATE",
+			key: this.props.streamKey,
+			value: { videoEnabled: !this.props.video }
+		}))
 	}
 
 	toggleFullscreen(){

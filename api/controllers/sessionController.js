@@ -142,8 +142,6 @@ module.exports = {
       } else {
         return res.status(404).send({ error: "No session available" });
       }
-
-
       return res.status(200).send({success: "Your have succesfully left the session"});
     });
   }

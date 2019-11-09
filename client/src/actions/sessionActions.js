@@ -231,4 +231,12 @@ export const updateStreamElement = (key, element) => ({
 export const removeStream = (key) => ({
     type: types.REMOVE_STREAM,
     key: key
-})
+});
+
+export const sendToAll = (message) => {
+    return (dispatch, getState) => {
+        window.sockets.forEach((socket) => {
+            socket.socket.send(message);
+        });
+    }
+}

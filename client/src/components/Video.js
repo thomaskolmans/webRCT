@@ -9,6 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import hark from 'hark';
 import update, { extend } from 'immutability-helper';
+import * as sessionApi from '../api/sessionApi.js';
 
 import ControlsContainer from '../containers/ControlsContainer';
 import Loader from './Loader';
@@ -42,10 +43,14 @@ export default class Video extends React.Component{
 		});
 
 		this.props.peer.on('connection', con => {
-			console.log('Connection has opened', con);
 			con.on('data', data => {
-				// data getting from connection
-				console.log('Received', data);
+				let json = JSON.parse(data);
+				if (
+					json.type == "STREAM_UPDATE" 
+					&& this.props.streams.filter ((stream) => stream.key == json.key).length > 0
+				){
+					this.props.updateStreamElement(json.key, json.value);
+				}
 			});
 		});
 
@@ -122,7 +127,6 @@ export default class Video extends React.Component{
 				this.error("Can't create a session");
 			});
 		}
-
 	}
 
 	callUsers(users){
@@ -138,12 +142,7 @@ export default class Video extends React.Component{
 
 	answerCall(connection, id){
 		let socketConnection = this.props.peer.connect(id);
-		socketConnection.on('open', () => {
-			socketConnection.on('data', data => {
-				console.log("RECEIVED DATA: " + data);
-			})
-			socketConnection.send(JSON.stringify({type: "STREAM_UPDATE" }));
-		});
+		window.sockets.push({ key: id, socket: socketConnection });
 
 		connection.on('stream', stream => {
 			let streamObject = {
@@ -157,10 +156,10 @@ export default class Video extends React.Component{
 			
 			var speechEvents = hark(stream, {})
 			speechEvents.on('speaking', () => {
-				this.props.updateStreamElement(stream.key, {speaking: true});
+				this.props.updateStreamElement(id, {speaking: true});
 			});
 			speechEvents.on('stopped_speaking', () => {
-				this.props.updateStreamElement(stream.key, {speaking: false});
+				this.props.updateStreamElement(id, {speaking: false});
 			});
 
 			if (this.props.streams.filter (s => s.key == id).length > 0){
@@ -170,10 +169,10 @@ export default class Video extends React.Component{
 			}
 		});
 		connection.on('close', () => {
+			window.sockets = window.sockets.filter ((s) => s.key != id)
 			this.props.removeStream(id);
 			this.props.activeUsers(this.props.session.key);
 		});
-
 	}
 
 	findStream(key){
@@ -218,14 +217,11 @@ export default class Video extends React.Component{
 		var eventName = iOS ? 'pagehide' : 'beforeunload';
 		window.addEventListener(eventName, (e) => {
 			e.preventDefault();
+			sessionApi.leaveSession(this.props.session.id, this.props.streamKey);
 
-			this.props.getUsers(this.props.session.key).then(response => {
-				this.props.leaveSession(this.props.session.id);
-				if(this.props.users.length <= 1){
-					this.props.endSession(this.props.session.key);
-				}
-			});
-
+			if(this.props.users.length < 1){
+				sessionApi.endSession(this.props.session.key);
+			}
 			e.returnValue = '';
 		});
 
@@ -240,7 +236,6 @@ export default class Video extends React.Component{
 			return (
 				<div className="streams">
 					{this.props.streams.map(stream => {
-						console.log(stream);
 						return (
 							<div className="video-content" key={stream.key}>
 								<div className={"poster " + (stream.videoEnabled ? 'hidden' : 'active')}>
@@ -267,7 +262,9 @@ export default class Video extends React.Component{
 				<div className="video">
 					{this.renderStreams()}
 					<ControlsContainer />
-					<img className={"logo " + BUSINESS_LOGO_PLACE} src={BUSINESS_LOGO} />
+					<img className={"logo " + BUSINESS_LOGO_PLACE} src={BUSINESS_LOGO} onClick={(e) => {
+						this.props.leaveSession(this.props.session.id, this.props.streamKey);
+					}} />
 				</div>
 				<Loader loading={this.props.streams.length < 1} />
 				<ToastContainer autoClose={3000} />

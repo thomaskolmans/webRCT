@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Controls from '../components/Controls';
 import * as controlActions from '../actions/controlActions';
+import * as sessionActions from '../actions/sessionActions';
 
 class ControlsContainer extends Component {
 
@@ -24,6 +25,7 @@ class ControlsContainer extends Component {
 
 function mapStateToProps(state, ownProps) {
   return {
+    streamKey: state.video.key,
     muted: state.controls.muted,
     video: state.controls.video
   };
@@ -32,7 +34,8 @@ function mapStateToProps(state, ownProps) {
 function mapDispatchToProps(dispatch) {
   return {
     toggleMute: () => dispatch(controlActions.toggleMute()),
-    toggleVideo: () => dispatch(controlActions.toggleVideo())
+    toggleVideo: () => dispatch(controlActions.toggleVideo()),
+    sendMessage: (message) => dispatch(sessionActions.sendToAll(message))
   };
 }
 export default connect(

@@ -72,7 +72,7 @@ export default function controls(state = initialState, action) {
             if (originalStreamIndex1 >= 0){
                 let stream1 = {
                     ...streams1[originalStreamIndex1],
-                    ...element
+                    ...action.element
                 };
                 streams1[originalStreamIndex1] = stream1;
             }
