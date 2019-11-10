@@ -3,20 +3,19 @@ services:
     mysql:
         image: mysql
         build: ./db
-        ports:
-            - '3306:3306'
         environment:
             - MYSQL_ROOT_PASSWORD=root
         restart: always
         healthcheck:
             test: "exit 0"
-    
     app:
         build: .
         depends_on:
             mysql:
                 condition: service_healthy
         ports:
-            - "80:8080"
+            - "80:${PORT}"
+        links:
+            - mysql:mysql
         volumes:
             - ./:/usr/src/app
