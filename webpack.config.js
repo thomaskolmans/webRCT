@@ -1,9 +1,10 @@
 const path = require('path');
 const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
+const mode = 'production';
 
 module.exports = {
-	mode: 'development',
+	mode: mode,
 	entry: {
 		"bundle": "./client/src/webrtc.js",
 		"bundle.min": "./client/src/webrtc.js"
@@ -56,7 +57,7 @@ module.exports = {
 		}),
 		new webpack.DefinePlugin({
 		    'process.env': {
-		      'NODE_ENV': JSON.stringify('development'),
+		      'NODE_ENV': JSON.stringify(mode),
 		    },
 		})
 	]
