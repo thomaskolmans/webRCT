@@ -14,7 +14,7 @@ services:
             mysql:
                 condition: service_healthy
         ports:
-            - "80:${PORT}"
+            - "${PORT}:${PORT}"
         links:
             - mysql:mysql
         volumes:
