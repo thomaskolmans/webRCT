@@ -1,7 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
-const mode = 'development';
+const mode = 'production';
 
 module.exports = {
 	mode: mode,
