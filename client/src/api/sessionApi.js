@@ -14,8 +14,6 @@ export function getSession(id){
 }
 
 export function createSession(key){
-    console.log("CREATE KEY: " + key);
-
     return new Promise((resolve, reject) => {
         request.post('/session/create')
         .send({ key: key })
@@ -44,7 +42,6 @@ export function endSession(id){
 }
 
 export function joinSession(id, key) {
-    console.log("JOIN ID: " + id + " KEY: " + key);
     return new Promise((resolve, reject) => {
         request.post('/session/join')
         .send({ session_id: id, key: key })

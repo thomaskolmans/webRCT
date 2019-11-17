@@ -38,6 +38,7 @@ export default class Video extends React.Component{
 
 		this.props.peer.on('call', call => {
 			call.answer(window.localStream);
+
 			this.answerCall(call, call.peer);
 			this.props.activeUsers(this.props.session.key);
 		});
@@ -78,25 +79,25 @@ export default class Video extends React.Component{
 
 	openStream(){
 		navigator.getUserMedia({
-				audio: true,  
-				video: {
-					facingMode: (this.props.frontFacing? "user" : "environment"),
-					width: {ideal: 1280, max: 1920 },
-					height: {ideal: 720, max: 1080 }
-			  	}
-			}, stream => {
-				window.localStream = stream;
-				this.props.addStream({
-					key: this.props.peer.id,
-					loading: true,
-					muted: this.props.muted,
-					videoEnabled: this.props.video,
-					stream: stream
-				});
-			}, () => { 
-				this.error("Failed to access the webcam and/or microphone")
-
+			audio: true,  
+			video: {
+				facingMode: (this.props.frontFacing? "user" : "environment"),
+				width: {ideal: 1280, max: 1920 },
+				height: {ideal: 720, max: 1080 }
+			}
+		}, stream => {
+			window.localStream = stream;
+			window.cameraStream = stream;
+			this.props.addStream({
+				key: this.props.peer.id,
+				loading: true,
+				muted: this.props.muted,
+				videoEnabled: this.props.video,
+				stream: stream
 			});
+		}, () => { 
+			this.error("Failed to access the webcam and/or microphone")
+		});
 	}
 
 	joinSession(key, message = false){
@@ -143,6 +144,7 @@ export default class Video extends React.Component{
 	answerCall(connection, id){
 		let socketConnection = this.props.peer.connect(id);
 		window.sockets.push({ key: id, socket: socketConnection });
+		window.calls.push({key: id, connection: connection });
 
 		connection.on('stream', stream => {
 			let streamObject = {
@@ -154,13 +156,15 @@ export default class Video extends React.Component{
 				stream: stream
 			};
 			
-			var speechEvents = hark(stream, {})
-			speechEvents.on('speaking', () => {
-				this.props.updateStreamElement(id, {speaking: true});
-			});
-			speechEvents.on('stopped_speaking', () => {
-				this.props.updateStreamElement(id, {speaking: false});
-			});
+			if (stream.getAudioTracks().length > 0){
+				var speechEvents = hark(stream, {})
+				speechEvents.on('speaking', () => {
+					this.props.updateStreamElement(id, {speaking: true});
+				});
+				speechEvents.on('stopped_speaking', () => {
+					this.props.updateStreamElement(id, {speaking: false});
+				});
+			}
 
 			if (this.props.streams.filter (s => s.key == id).length > 0){
 				this.props.updateStream(streamObject);
@@ -170,6 +174,7 @@ export default class Video extends React.Component{
 		});
 		connection.on('close', () => {
 			window.sockets = window.sockets.filter ((s) => s.key != id)
+			window.calls = window.calls.filter ((c) => c.key != id)
 			this.props.removeStream(id);
 			this.props.activeUsers(this.props.session.key);
 		});
@@ -235,7 +240,7 @@ export default class Video extends React.Component{
 		} else {
 			return (
 				<div className="streams">
-					{this.props.streams.map(stream => {
+					{this.props.streams.reverse().map(stream => {
 						return (
 							<div className="video-content" key={stream.key}>
 								<div className={"poster " + (stream.videoEnabled ? 'hidden' : 'active')}>

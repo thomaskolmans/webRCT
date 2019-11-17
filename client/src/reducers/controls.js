@@ -3,6 +3,7 @@ import * as types from "../constants/actionTypes.js";
 const initialState = {
     muted: false,
     video: true,
+    screenSharing: false,
     frontFacing: true,
     fullscreen: false,
     share_box: false,
@@ -21,6 +22,12 @@ export default function controls(state = initialState, action) {
             return {
                 ...state,
                 video: !state.video
+            };
+        break;
+        case types.TOGGLE_SCREEN_SHARING:
+            return {
+                ...state,
+                screenSharing: !state.screenSharing
             };
         break;
     }

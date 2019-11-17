@@ -48,6 +48,65 @@ export default class Controls extends Component {
 		}))
 	}
 
+	toggleScreenShare() {
+		if (!this.props.screenSharing) {
+			let mediaStream = navigator.mediaDevices.getDisplayMedia({
+				video: true
+			}).then((stream) => {
+				this.props.toggleScreenSharing();
+
+				let newStream = stream;
+				window.localStream.getAudioTracks().forEach((track) => {
+					newStream.addTrack(track);
+				});
+				
+				window.calls.forEach((call) => {
+					call.connection.peerConnection.getSenders().forEach((sender) => {
+						sender.replaceTrack(stream.getVideoTracks()[0]);
+					})
+				})
+
+				newStream.getVideoTracks().forEach((track) => {
+					track.onended = () => {
+						this.props.toggleScreenSharing();
+						this.props.updateStreamElement(
+							this.props.streamKey, 
+							{ stream: window.cameraStream, loading: true }
+						);		
+					};
+				});
+
+				this.props.updateStreamElement(
+					this.props.streamKey, 
+					{ stream: newStream, loading: true }
+				);
+			}).catch((e) => {
+				toast.error('Unable to acquire screen capture', {
+					position: toast.POSITION.TOP_LEFT
+				});
+			});
+		} else {
+			let previousStreams = [...this.props.streams
+				.filter((stream) => stream.key == this.props.streamKey)]
+				
+			window.calls.forEach((call) => {
+				call.connection.peerConnection.getSenders().forEach((sender) => {
+					sender.replaceTrack(window.cameraStream.getVideoTracks()[0]);
+				})
+			})
+
+			this.props.toggleScreenSharing();
+			this.props.updateStreamElement(
+				this.props.streamKey, 
+				{ stream: window.cameraStream, loading: true }
+			);
+
+			previousStreams.forEach((stream) => {
+				stream.stream.getVideoTracks().forEach((track) => track.stop());
+			});
+		}
+	}
+
 	toggleFullscreen(){
 		if ((document.fullScreenElement && document.fullScreenElement !== null) ||    
 		(!document.mozFullScreen && !document.webkitIsFullScreen)) {
@@ -138,8 +197,9 @@ export default class Controls extends Component {
 							<button>Copy</button>
 					</CopyToClipboard>
 				</div>
-				<div className={"button mute " + (this.props.muted ? 'active' : '')} data-tip={(this.props.muted ? 'Unmute' : 'Mute')} onClick={(e) => this.toggleMute(e)}></div>
-				<div className={"button video " + (this.props.video ? '' : 'active')} data-tip={(this.props.video ? 'Hide video' : 'Show video')} onClick={(e) => this.toggleVideo(e)}></div>
+				<div className={"button mute " + (this.props.muted ? '' : 'active')} data-tip={(this.props.muted ? 'Unmute' : 'Mute')} onClick={(e) => this.toggleMute(e)}></div>
+				<div className={"button video " + (this.props.video ? 'active' : '')} data-tip={(this.props.video ? 'Hide video' : 'Show video')} onClick={(e) => this.toggleVideo(e)}></div>
+				<div className={"button screenSharing " + (this.props.screenSharing ? 'active' : '')} data-tip={(this.props.screenSharing ? 'Stop sharing screen' : 'Share screen')} onClick={(e) => this.toggleScreenShare(e)}></div>
 				<div className={"button share " + (this.state.share_box ? 'active' : '')} data-tip="Share" onClick={(e) => this.toggleShare(e)}></div>
 				<div className={"button full " + (this.state.fullscreen ? 'active' : '')} data-tip={(this.state.fullscreen ? 'Exit full screen' : 'Full screen')}onClick={(e) => this.toggleFullscreen(e)}></div>
 				<ReactTooltip place="top" type="dark" effect="solid"  html={true}  multiline={false} />

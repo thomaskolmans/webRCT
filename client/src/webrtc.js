@@ -9,13 +9,14 @@ import {BrowserRouter, BrowserHistory, matchPath, Switch, Route, Link} from 'rea
 import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
 import VideoContainer from './containers/VideoContainer';
-import {BUSINESS_NAME, BUSINESS_LOGO_SQUARE} from "babel-dotenv";
+import {BACKGROUND_COLOR, BUSINESS_NAME, BUSINESS_LOGO_SQUARE} from "babel-dotenv";
 
 import configureStore from './store/configureStore.js';
 
 const store = configureStore();
 const peer = new Peer({host: location.hostname, port: location.port, path: '/peerjs', proxied: true, debug: 3});
 window.sockets = [];
+window.calls = [];
 
 export default class WebRTC extends React.Component{
 
@@ -47,7 +48,9 @@ export default class WebRTC extends React.Component{
 
 const PageShell = Page => { 
     return props =>
-		<div className="page">
+		<div className="page" style={{
+			backgroundColor: "#" + BACKGROUND_COLOR
+		}}>
 			<BasicTags />
 			<Page peer={peer} sockets={sockets} {...props} />
 		</div>

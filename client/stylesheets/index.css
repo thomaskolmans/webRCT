@@ -139,7 +139,6 @@ body {
   flex-wrap: wrap;
   height: 100vh; }
   .video .streams .video-content {
-    background: #232323;
     min-width: 350px;
     flex: 1;
     overflow: hidden;
@@ -179,7 +178,7 @@ body {
   transform: translateX(-50%);
   text-align: center;
   display: flex;
-  z-index: 100;
+  z-index: 10000000;
   -webkit-animation: pop-in-controls 0.6s;
   -moz-animation: pop-in-controls 0.6s;
   -o-animation: pop-in-controls 0.6s;
@@ -258,13 +257,15 @@ body {
       transition: 0.4s;
       -webkit-transition: 0.4s; }
     .video .controls .button.mute::before {
-      content: ""; }
-    .video .controls .button.mute.active::before {
       content: ""; }
+    .video .controls .button.mute.active::before {
+      content: ""; }
     .video .controls .button.video::before {
       content: ""; }
     .video .controls .button.share::before {
       content: ""; }
+    .video .controls .button.screenSharing::before {
+      content: ""; }
     .video .controls .button.full::before {
       content: ""; }
     .video .controls .button.full.active::before {

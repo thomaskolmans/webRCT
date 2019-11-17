@@ -10,6 +10,8 @@ class ControlsContainer extends Component {
     const {
       toggleMute,
       toggleVideo,
+      toggleScreenSharing,
+      updateStreamElement,
       ...props
     } = this.props;
   
@@ -18,6 +20,8 @@ class ControlsContainer extends Component {
           {...props}
           toggleMute={toggleMute}
           toggleVideo={toggleVideo}
+          toggleScreenSharing={toggleScreenSharing}
+          updateStreamElement={(key, element) => updateStreamElement(key, element)}
         />
     );
   }
@@ -27,7 +31,9 @@ function mapStateToProps(state, ownProps) {
   return {
     streamKey: state.video.key,
     muted: state.controls.muted,
-    video: state.controls.video
+    video: state.controls.video,
+    screenSharing: state.controls.screenSharing,
+    streams: state.video.streams
   };
 }
 
@@ -35,7 +41,9 @@ function mapDispatchToProps(dispatch) {
   return {
     toggleMute: () => dispatch(controlActions.toggleMute()),
     toggleVideo: () => dispatch(controlActions.toggleVideo()),
-    sendMessage: (message) => dispatch(sessionActions.sendToAll(message))
+    toggleScreenSharing: () => dispatch(controlActions.toggleScreenSharing()),
+    sendMessage: (message) => dispatch(sessionActions.sendToAll(message)),
+    updateStreamElement: (key, element) => dispatch(sessionActions.updateStreamElement(key, element)),
   };
 }
 export default connect(
