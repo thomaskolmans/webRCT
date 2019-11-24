@@ -14,7 +14,7 @@ import {BACKGROUND_COLOR, BUSINESS_NAME, BUSINESS_LOGO_SQUARE} from "babel-doten
 import configureStore from './store/configureStore.js';
 
 const store = configureStore();
-const peer = new Peer({host: location.hostname, port: location.port, path: '/peerjs', proxied: true, debug: 3});
+const peer = new Peer({ host: location.hostname, port: location.port, path: '/peerjs', proxied: true });
 window.sockets = [];
 window.calls = [];
 

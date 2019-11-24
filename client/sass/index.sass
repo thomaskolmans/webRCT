@@ -11,6 +11,15 @@
             flex: 1
             overflow: hidden
             position: relative
+            &.corner-small
+                position: absolute
+                min-width: auto
+                width: 240px
+                height: 135px
+                right: 2%
+                bottom: 2%
+                z-index: 100
+                box-shadow: $video-shadow
             video, .poster
                 position: absolute
                 left: 0
@@ -24,11 +33,11 @@
                 z-index: 10
                 +transition($s)
                 img
-                    height: 400px
-                    width: 400px
+                    height: 80%
+                    width: 80%
                     border-radius: 50%
-                    max-height: 60%
-                    max-width: 100%
+                    max-height: 400px
+                    max-width: 400px
                     object-fit: cover
                     position: absolute
                     top: 50%

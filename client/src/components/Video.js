@@ -81,9 +81,7 @@ export default class Video extends React.Component{
 		navigator.getUserMedia({
 			audio: true,  
 			video: {
-				facingMode: (this.props.frontFacing? "user" : "environment"),
-				width: {ideal: 1280, max: 1920 },
-				height: {ideal: 720, max: 1080 }
+				facingMode: (this.props.frontFacing? "user" : "environment")
 			}
 		}, stream => {
 			window.localStream = stream;
@@ -156,15 +154,16 @@ export default class Video extends React.Component{
 				stream: stream
 			};
 			
-			if (stream.getAudioTracks().length > 0){
-				var speechEvents = hark(stream, {})
-				speechEvents.on('speaking', () => {
-					this.props.updateStreamElement(id, {speaking: true});
-				});
-				speechEvents.on('stopped_speaking', () => {
-					this.props.updateStreamElement(id, {speaking: false});
-				});
-			}
+			// Who is speaking
+			// if (stream.getAudioTracks().length > 0){
+			// 	var speechEvents = hark(stream, {})
+			// 	speechEvents.on('speaking', () => {
+			// 		this.props.updateStreamElement(id, { speaking: true });
+			// 	});
+			// 	speechEvents.on('stopped_speaking', () => {
+			// 		this.props.updateStreamElement(id, { speaking: false });
+			// 	});
+			// }
 
 			if (this.props.streams.filter (s => s.key == id).length > 0){
 				this.props.updateStream(streamObject);
@@ -232,7 +231,7 @@ export default class Video extends React.Component{
 
 	}
 
-	renderStreams() {
+	_renderStreams() {
 		 if (USER_LIST_STYLE == "WINDOWED") {
 
 		} else if (USER_LIST_STYLE == "USER_LIST_STYLE") {
@@ -240,9 +239,12 @@ export default class Video extends React.Component{
 		} else {
 			return (
 				<div className="streams">
-					{this.props.streams.reverse().map(stream => {
+					{this.props.streams.map(stream => {
 						return (
-							<div className="video-content" key={stream.key}>
+							<div 
+								className={(this.props.streams.length > 1 && stream.key == this.props.streamKey) ? "video-content corner-small" : "video-content"} 
+								key={stream.key}
+							>
 								<div className={"poster " + (stream.videoEnabled ? 'hidden' : 'active')}>
 									<img src="/images/placeholder.png" />
 								</div>
@@ -265,11 +267,9 @@ export default class Video extends React.Component{
 		return (
 			<div>
 				<div className="video">
-					{this.renderStreams()}
+					{this._renderStreams()}
 					<ControlsContainer />
-					<img className={"logo " + BUSINESS_LOGO_PLACE} src={BUSINESS_LOGO} onClick={(e) => {
-						this.props.leaveSession(this.props.session.id, this.props.streamKey);
-					}} />
+					<img className={"logo " + BUSINESS_LOGO_PLACE} src={BUSINESS_LOGO} />
 				</div>
 				<Loader loading={this.props.streams.length < 1} />
 				<ToastContainer autoClose={3000} />
