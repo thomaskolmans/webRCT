@@ -240,8 +240,8 @@ body {
       margin-bottom: 0;
       text-align: center; }
   .video .controls .button {
-    height: 8vh;
-    width: 8vh;
+    height: 6.5vh;
+    width: 6.5vh;
     margin: 25px 0.4vh;
     border-radius: 50%;
     flex: 1;
@@ -266,6 +266,10 @@ body {
       transform: translate(-50%, -50%);
       transition: 0.4s;
       -webkit-transition: 0.4s; }
+    .video .controls .button.facing::before {
+      content: ""; }
+    .video .controls .button.facing.active::before {
+      content: ""; }
     .video .controls .button.mute::before {
       content: ""; }
     .video .controls .button.mute.active::before {

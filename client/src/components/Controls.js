@@ -31,6 +31,10 @@ export default class Controls extends Component {
 
 	}
 
+	toggleFrontFacing() {
+		this.props.toggleFacing();
+	}
+
 	toggleMute(){
 		this.props.toggleMute()
 		this.props.sendMessage(JSON.stringify({
@@ -198,7 +202,7 @@ export default class Controls extends Component {
 							<button>Copy</button>
 					</CopyToClipboard>
 				</div>
-				{ isMobile && <div className={"button facing " + (this.props.frontFacing ? '' : 'active')} data-tip={(this.props.frontFacing ? 'Unmute' : 'Mute')} onClick={(e) => this.toggleFrontFacing(e)}></div> }
+				{ isMobile && <div className={"button facing " + (this.props.frontFacing ? 'active' : '')} data-tip={(this.props.frontFacing ? 'Front camera' : 'Selfie camera')} onClick={(e) => this.toggleFrontFacing(e)}></div> }
 				<div className={"button mute " + (this.props.muted ? '' : 'active')} data-tip={(this.props.muted ? 'Unmute' : 'Mute')} onClick={(e) => this.toggleMute(e)}></div>
 				<div className={"button video " + (this.props.video ? 'active' : '')} data-tip={(this.props.video ? 'Hide video' : 'Show video')} onClick={(e) => this.toggleVideo(e)}></div>
 				<div className={"button screenSharing " + (this.props.screenSharing ? 'active' : '')} data-tip={(this.props.screenSharing ? 'Stop sharing screen' : 'Share screen')} onClick={(e) => this.toggleScreenShare(e)}></div>

@@ -8,6 +8,7 @@ class ControlsContainer extends Component {
 
   render() {
     const {
+      toggleFacing,
       toggleMute,
       toggleVideo,
       toggleScreenSharing,
@@ -18,6 +19,7 @@ class ControlsContainer extends Component {
     return (
         <Controls
           {...props}
+          toggleFacing={toggleFacing}
           toggleMute={toggleMute}
           toggleVideo={toggleVideo}
           toggleScreenSharing={toggleScreenSharing}
@@ -39,6 +41,7 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    toggleFacing: () => dispatch(controlActions.toggleFacing()),
     toggleMute: () => dispatch(controlActions.toggleMute()),
     toggleVideo: () => dispatch(controlActions.toggleVideo()),
     toggleScreenSharing: () => dispatch(controlActions.toggleScreenSharing()),

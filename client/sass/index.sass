@@ -98,8 +98,8 @@
                 text-align: center
                 
         .button
-            height: 8vh
-            width: 8vh
+            height: 6.5vh
+            width: 6.5vh
             margin: 25px .4vh
             border-radius: 50%
             flex: 1
@@ -122,6 +122,12 @@
                 left: 50%
                 transform: translate(-50%,-50%)
                 +transition($s)
+            &.facing
+                &::before
+                    content: "\f007"
+                &.active
+                    &::before
+                        content: "\f0ac"
             &.mute
                 &::before
                     content: "\f131"

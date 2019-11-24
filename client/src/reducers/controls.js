@@ -24,6 +24,12 @@ export default function controls(state = initialState, action) {
                 video: !state.video
             };
         break;
+        case types.TOGGLE_FACING:
+            return {
+                ...state,
+                frontFacing: !state.frontFacing
+            };
+        break;
         case types.TOGGLE_SCREEN_SHARING:
             return {
                 ...state,
