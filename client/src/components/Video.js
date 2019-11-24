@@ -119,7 +119,11 @@ export default class Video extends React.Component{
 
 	createSession(){
 		if (!this.props.session) {
-			this.props.createSession(this.guid()).then(response => {
+			let id = this.guid();
+			if (this.props.match.params.key){
+				id = this.props.match.params.key;
+			}
+			this.props.createSession(id).then(response => {
 				this.joinSession(response.key);
 				this.success("You've created and joined a new session!");
 			}).catch(error => {

@@ -20,10 +20,6 @@ window.calls = [];
 
 export default class WebRTC extends React.Component{
 
-	constructor(props){
-		super(props);
-	}
-    
 	render(){
 		return (
 			<Provider store={store}>
