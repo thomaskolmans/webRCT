@@ -21,7 +21,7 @@ class ControlsContainer extends Component {
           {...props}
           toggleFacing={toggleFacing}
           toggleMute={toggleMute}
-          toggleVideo={toggleVideo}
+          toggleVideo={(stream, muted, frontFacing) => toggleVideo(stream, muted, frontFacing)}
           toggleScreenSharing={toggleScreenSharing}
           updateStreamElement={(key, element) => updateStreamElement(key, element)}
         />
@@ -34,6 +34,7 @@ function mapStateToProps(state, ownProps) {
     streamKey: state.video.key,
     muted: state.controls.muted,
     video: state.controls.video,
+    frontFacing: state.controls.frontFacing,
     screenSharing: state.controls.screenSharing,
     streams: state.video.streams
   };
@@ -43,7 +44,7 @@ function mapDispatchToProps(dispatch) {
   return {
     toggleFacing: () => dispatch(controlActions.toggleFacing()),
     toggleMute: () => dispatch(controlActions.toggleMute()),
-    toggleVideo: () => dispatch(controlActions.toggleVideo()),
+    toggleVideo: (stream, muted, frontFacing) => dispatch(controlActions.toggleVideo(stream, muted, frontFacing)),
     toggleScreenSharing: () => dispatch(controlActions.toggleScreenSharing()),
     sendMessage: (message) => dispatch(sessionActions.sendToAll(message)),
     updateStreamElement: (key, element) => dispatch(sessionActions.updateStreamElement(key, element)),

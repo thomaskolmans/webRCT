@@ -86,7 +86,7 @@ module.exports = {
   },
   end: function (req, res, next) {
     var params = _.pick(req.body, 'key');
-    req.models.session.find({key: params.key}, function (err, session) {
+    req.models.session.find({key: params.key}, function (err, sessions) {
       if(err) {
         if(Array.isArray(err)) {
           return res.status(422).send({ errors: helpers.formatErrors(err) });
@@ -94,9 +94,14 @@ module.exports = {
           return next(err);
         }
       }
-      session[0].ended = new Date();
-      session[0].save();
-
+      sessions.forEach((session) => {
+          req.models.session_user.find({session_id: session.id}, function (err, session_users) {
+            if (session_users.length > 0){
+              session_users.forEach((session_user) => session_user.remove());
+            }
+          });
+          session.remove()
+      })
       return res.status(200).send({success: "Your session has ended successfully"});
     });
   },

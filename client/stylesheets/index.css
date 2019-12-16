@@ -164,11 +164,12 @@ body {
     .video .streams .video-content .poster {
       display: none;
       z-index: 10;
+      position: relative;
       transition: 0.4s;
       -webkit-transition: 0.4s; }
       .video .streams .video-content .poster img {
         height: 80%;
-        width: 80%;
+        width: 50%;
         border-radius: 50%;
         max-height: 400px;
         max-width: 400px;

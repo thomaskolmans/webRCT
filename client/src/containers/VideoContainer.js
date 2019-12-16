@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Video from '../components/Video';
 import * as sessionActions from '../actions/sessionActions';
+import * as controlActions from '../actions/controlActions';
 
 class VideoContainer extends Component {
 
@@ -24,6 +25,8 @@ class VideoContainer extends Component {
       updateStream,
       updateStreamElement,
       removeStream,
+      toggleMute,
+      toggleVideo,
       ...props
     } = this.props;
   
@@ -43,6 +46,8 @@ class VideoContainer extends Component {
           updateStream={(stream) => updateStream(stream)}
           updateStreamElement={(key, element) => updateStreamElement(key, element)}
           removeStream={(stream) => removeStream(stream)}
+          toggleMute={toggleMute}
+          toggleVideo={(stream, muted, frontFacing) => toggleVideo(stream, muted, frontFacing)}
         />
     );
   }
@@ -73,7 +78,9 @@ function mapDispatchToProps(dispatch) {
     addStream: (stream) => dispatch(sessionActions.addStream(stream)),
     updateStream: (stream) => dispatch(sessionActions.updateStream(stream)),
     updateStreamElement: (key, element) => dispatch(sessionActions.updateStreamElement(key, element)),
-    removeStream: (stream) => dispatch(sessionActions.removeStream(stream))
+    removeStream: (stream) => dispatch(sessionActions.removeStream(stream)),
+    toggleMute: () => dispatch(controlActions.toggleMute()),
+    toggleVideo: (stream, muted, frontFacing) => dispatch(controlActions.toggleVideo(stream, muted, frontFacing)),
 
   };
 }

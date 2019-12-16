@@ -92,9 +92,11 @@ export default function controls(state = initialState, action) {
             let originalStreamIndex3 = streams3.findIndex(f => f.key == state.key);
             if (originalStreamIndex3 >= 0){
                 let stream3 = {...streams3[originalStreamIndex3]}
-                stream3.stream.getAudioTracks()[0].enabled = stream3.muted;
-                stream3.muted = !stream3.muted;
+                if (stream3.stream) {
+                    stream3.stream.getAudioTracks()[0].enabled = state.muted;
+                }
 
+                stream3.muted = !state.muted;
                 streams3[originalStreamIndex3] = stream3;
             }
 
@@ -108,20 +110,43 @@ export default function controls(state = initialState, action) {
             let originalStreamIndex = streams.findIndex(f => f.key == state.key);
             if (originalStreamIndex >= 0){
                 let stream = {...streams[originalStreamIndex]};
-                // if (stream.videoEnabled){
-                //     stream.stream.getVideoTracks()[0].stop();
-                // } else {
-                //     stream.stream.getVideoTracks()[0].start();
-                // }
-                stream.stream.getVideoTracks()[0].enabled = !stream.videoEnabled;
-                stream.videoEnabled = !stream.videoEnabled;
-        
+                if (stream.stream) {
+                    stream.stream.getVideoTracks()[0].enabled = !stream.videoEnabled;
+                }
+                if (stream.videoEnabled){
+                    if (stream.stream) {
+                        stream.stream.getVideoTracks()[0].stop();
+                    }
+                    stream.videoEnabled = false;
+                } else {
+                    stream.stream = action.stream;
+                    stream.loading = true;
+                    stream.videoEnabled = true;
+                }
                 streams[originalStreamIndex] = stream;
             }
 
             return {
                 ...state,
                 streams: streams
+            }
+        break;
+        case types.TOGGLE_FACING:
+            let streams4 = [...state.streams];
+            let originalStreamIndex4 = streams4.findIndex(f => f.key == state.key);
+            if (originalStreamIndex4 >= 0){
+                let stream4 = {...streams4[originalStreamIndex4]};
+                if (stream4.stream) {
+                    stream4.stream = action.stream;
+                    stream4.loading = true;
+                    stream4.videoEnabled = true;
+                }
+                streams4[originalStreamIndex4] = stream4;
+            }
+
+            return {
+                ...state,
+                streams: streams4
             }
         break;
     }

@@ -15,6 +15,8 @@ import configureStore from './store/configureStore.js';
 
 const store = configureStore();
 const peer = new Peer({ host: location.hostname, port: location.port, path: '/peerjs', proxied: true });
+window.localStream = new MediaStream();
+
 window.sockets = [];
 window.calls = [];
 

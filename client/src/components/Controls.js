@@ -33,6 +33,30 @@ export default class Controls extends Component {
 
 	toggleFrontFacing() {
 		this.props.toggleFacing();
+		navigator.getUserMedia({
+			audio: !this.props.muted,
+			video: {
+				facingMode: (this.props.frontFacing ? "user" : "environment")
+			}
+		}, stream => {
+			let newStream = stream;
+			window.localStream = newStream;
+
+			window.calls.forEach((call) => {
+				call.connection.peerConnection.getSenders().forEach((sender) => {
+					sender.replaceTrack(newStream.getVideoTracks()[0]);
+				})
+			});
+
+			this.props.updateStreamElement(
+				this.props.streamKey, 
+				{ stream: newStream, loading: true, videoEnabled: this.props.video }
+			);
+		}, (e) => {
+			toast.error('Failed to access the webcam and/or microphone', {
+				position: toast.POSITION.TOP_LEFT
+			});
+		});
 	}
 
 	toggleMute(){
@@ -45,12 +69,42 @@ export default class Controls extends Component {
 	}
 
 	toggleVideo(){
-		this.props.toggleVideo();
-		this.props.sendMessage(JSON.stringify({
-			type: "STREAM_UPDATE",
-			key: this.props.streamKey,
-			value: { videoEnabled: !this.props.video }
-		}))
+		if (!this.props.video) {
+			navigator.getUserMedia({
+				audio: !this.props.muted,
+				video: {
+					facingMode: (this.props.frontFacing ? "user" : "environment")
+				}
+			}, mediaStream => {
+				window.localStream.getVideoTracks()[0].stop();
+				window.localStream = mediaStream;
+
+				window.calls.forEach((call) => {
+					call.connection.peerConnection.getSenders().forEach((sender) => {
+						sender.replaceTrack(mediaStream.getVideoTracks()[0]);
+					})
+				});
+
+				this.props.toggleVideo(mediaStream, this.props.muted, this.props.frontFacing);
+				this.props.sendMessage(JSON.stringify({
+					type: "STREAM_UPDATE",
+					key: this.props.streamKey,
+					value: { videoEnabled: true }
+				}));
+			}, e => {
+				toast.error('Failed to access the webcam and/or microphone', {
+					position: toast.POSITION.TOP_LEFT
+				});
+			});
+		} else {
+			this.props.toggleVideo(window.localStream, this.props.muted, this.props.frontFacing);
+			this.props.sendMessage(JSON.stringify({
+				type: "STREAM_UPDATE",
+				key: this.props.streamKey,
+				value: { videoEnabled: false }
+			}));
+		}
+
 	}
 
 	toggleScreenShare() {
@@ -61,10 +115,12 @@ export default class Controls extends Component {
 				this.props.toggleScreenSharing();
 
 				let newStream = stream;
-				window.localStream.getAudioTracks().forEach((track) => {
-					newStream.addTrack(track);
-				});
-				
+				if (window.localStream){
+					window.localStream.getAudioTracks().forEach((track) => {
+						newStream.addTrack(track);
+					});
+				}
+
 				window.calls.forEach((call) => {
 					call.connection.peerConnection.getSenders().forEach((sender) => {
 						sender.replaceTrack(stream.getVideoTracks()[0]);
@@ -73,17 +129,44 @@ export default class Controls extends Component {
 
 				newStream.getVideoTracks().forEach((track) => {
 					track.onended = () => {
-						this.props.toggleScreenSharing();
-						this.props.updateStreamElement(
-							this.props.streamKey, 
-							{ stream: window.cameraStream, loading: true }
-						);		
+						if (this.props.video) {
+							navigator.getUserMedia({
+								audio: !this.props.muted,
+								video: {
+									facingMode: (this.props.frontFacing ? "user" : "environment")
+								}
+							}, mediaStream => {
+								window.localStream.getVideoTracks()[0].stop();
+								window.localStream = mediaStream; 
+	
+								window.calls.forEach((call) => {
+									call.connection.peerConnection.getSenders().forEach((sender) => {
+										sender.replaceTrack(mediaStream.getVideoTracks()[0]);
+									})
+								});
+								this.props.toggleScreenSharing();
+								this.props.updateStreamElement(
+									this.props.streamKey, 
+									{ stream: mediaStream, loading: true, videoEnabled: this.props.video }
+								);	
+							}, e => {
+								toast.error('Failed to access the webcam and/or microphone', {
+									position: toast.POSITION.TOP_LEFT
+								});
+							});
+						} else {
+							this.props.toggleScreenSharing();
+							this.props.updateStreamElement(
+								this.props.streamKey, 
+								{ stream: null, loading: false, videoEnabled: this.props.video }
+							);	
+						}
 					};
 				});
 
 				this.props.updateStreamElement(
 					this.props.streamKey, 
-					{ stream: newStream, loading: true }
+					{ stream: newStream, loading: true, videoEnabled: true }
 				);
 			}).catch((e) => {
 				toast.error('Unable to acquire screen capture', {
@@ -93,22 +176,47 @@ export default class Controls extends Component {
 		} else {
 			let previousStreams = [...this.props.streams
 				.filter((stream) => stream.key == this.props.streamKey)]
-				
-			window.calls.forEach((call) => {
-				call.connection.peerConnection.getSenders().forEach((sender) => {
-					sender.replaceTrack(window.cameraStream.getVideoTracks()[0]);
-				})
-			})
+			
+			if (this.props.video) {
 
-			this.props.toggleScreenSharing();
-			this.props.updateStreamElement(
-				this.props.streamKey, 
-				{ stream: window.cameraStream, loading: true }
-			);
+				navigator.getUserMedia({
+					audio: !this.props.muted,
+					video: {
+						facingMode: (this.props.frontFacing ? "user" : "environment")
+					}
+				}, stream => {
+					window.localStream.getVideoTracks()[0].stop();
+					window.localStream = stream;
 
-			previousStreams.forEach((stream) => {
-				stream.stream.getVideoTracks().forEach((track) => track.stop());
-			});
+					window.calls.forEach((call) => {
+						call.connection.peerConnection.getSenders().forEach((sender) => {
+							if (stream){
+								sender.replaceTrack(stream.getVideoTracks()[0]);
+							}
+						})
+					});
+		
+					this.props.toggleScreenSharing();
+					this.props.updateStreamElement(
+						this.props.streamKey, 
+						{ stream: stream, loading: true, videoEnabled: this.props.video }
+					);
+		
+					previousStreams.forEach((stream) => {
+						stream.stream.getVideoTracks().forEach((track) => track.stop());
+					});
+				}, e => {
+					toast.error('Failed to access the webcam and/or microphone', {
+						position: toast.POSITION.TOP_LEFT
+					});
+				});
+			} else {
+				this.props.toggleScreenSharing();
+				this.props.updateStreamElement(
+					this.props.streamKey, 
+					{ stream: null, loading: false, videoEnabled: this.props.video }
+				);	
+			}
 		}
 	}
 
