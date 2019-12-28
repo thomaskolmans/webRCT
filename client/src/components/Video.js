@@ -114,7 +114,7 @@ export default class Video extends React.Component {
 
 			const audioTrack = createEmptyAudioTrack();
 			const videoTrack = createEmptyVideoTrack({ width: 640, height: 480 });
-			const mediaStream = new MediaStream([audioTrack);
+			const mediaStream = new MediaStream([audioTrack]);
 			window.localStream = mediaStream; 
 
 			this.props.addStream({
@@ -123,10 +123,11 @@ export default class Video extends React.Component {
 				muted: true,
 				videoEnabled: false,
 				stream: mediaStream
-			});
+            });
+            
 			this.props.toggleVideo(null, true, true);
 			this.props.toggleMute();
-			this.error("Failed to access the webcam and/or microphone")
+			this.error("Failed to access the webcam and/or microphone");
 		});
 	}
 
@@ -239,8 +240,6 @@ export default class Video extends React.Component {
 				if (stream.stream) {
 					let video = document.getElementById(stream.key);
 					if (video) {
-
-						console.log(stream.stream.getVideoTracks());
 						video.srcObject = stream.stream;
 						video.load();
 
