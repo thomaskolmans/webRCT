@@ -1,17 +1,34 @@
 const path = require('path');
 const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
+const mode = 'production';
 
 module.exports = {
+	mode: mode,
 	entry: {
 		"bundle": "./client/src/webrtc.js",
 		"bundle.min": "./client/src/webrtc.js"
 	},
 	output: {
-	    filename: "client/dist/[name].js"
+		path: path.resolve(__dirname, 'client/dist'),
+	    filename: "[name].js"
 	},
 	node: {
 		fs: 'empty'
+	},
+	devServer: {
+		contentBase: "./client",
+	    historyApiFallback: {
+	      index: 'index.html'
+		},
+		port: 8085,
+		hot: true,
+	    proxy: {
+			'/session': {
+				target: 'http://localhost:8080',
+				secure: false
+			}
+	    }
 	},
 	module: {
 	  rules: [
@@ -40,7 +57,7 @@ module.exports = {
 		}),
 		new webpack.DefinePlugin({
 		    'process.env': {
-		      'NODE_ENV': JSON.stringify('development'),
+		      'NODE_ENV': JSON.stringify(mode),
 		    },
 		})
 	]

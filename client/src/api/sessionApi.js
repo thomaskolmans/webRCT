@@ -1,96 +1,95 @@
 import request from 'superagent';
-import Promise from 'promise';
 
 export function getSession(id){
     return new Promise((resolve, reject) => {
         request.get('/session/' + id)
         .end(function(error, response){
             if (error || !response.ok) {
-                reject(error);
+                reject(error.body);
             } else {
-                resolve(response);
+                resolve(response.body);
             }
         });
     });
 }
 
-export function createSession(){
+export function createSession(key){
     return new Promise((resolve, reject) => {
         request.post('/session/create')
-        .send({ key: this.guid() })
+        .send({ key: key })
         .end(function(error, response){
             if (error || !response.ok) {
-                reject(response.error);
-            }else{
-                resolve(response);
+                reject(error.body);
+            } else {
+                resolve(response.body);
             }
         });
     });
 }
 
-export function endSession(){
+export function endSession(id){
     return new Promise((resolve, reject) => {
         request.post('/session/end')
-        .send({ key: this.state.session.key })
+        .send({ key: id })
         .end(function(error, response){
             if (error || !response.ok) {
-                reject(response.error);
+                reject(error.body);
             } else {
-                resolve(response);
+                resolve(response.body);
             }
         });
     });	
 }
 
-export function joinSession(id) {
+export function joinSession(id, key) {
     return new Promise((resolve, reject) => {
         request.post('/session/join')
-        .send({ session_id: id, key: this.state.user_key })
+        .send({ session_id: id, key: key })
         .end(function(error, response){
             if (error || !response.ok) {
-                reject(error);
+                reject(error.body);
             } else {
-                resolve(response);
+                resolve(response.body);
             }
         });
     });
 }
 
-export function leaveSession(id){
+export function leaveSession(id, key){
     return new Promise((resolve, reject) => {
         request.post('/session/leave')
-        .send({ session_id: id, key: this.state.user_key })
+        .send({ session_id: id, key: key })
         .end(function(error, response){
             if (error || !response.ok) {
-                reject(error);
+                reject(error.body);
             } else {
-                resolve(response);
+                resolve(response.body);
             }
         });
     });
 }
 
-export function activeUsers(key){
+export function activeUsers(id){
     return new Promise((resolve, reject) => {
-        request.get('/session/' + key + '/active/users')
+        request.get('/session/' + id + '/active/users')
         .end(function(error, response){
             if (error || !response.ok) {
-                reject(error);
+                reject(error.body);
             } else {
-                resolve(response);
+                resolve(response.body);
             }
         });
     });	
 }
 
-export function users(key){
+export function users(id){
     return new Promise((resolve, reject) => {
-        request.get('/session/' + key + '/users')
+        request.get('/session/' + id + '/users')
         .end(function(error, response){
             if (error || !response.ok) {
-                reject(error);
+                reject(error.body);
             } else {
-                resolve(response);
+                resolve(response.body);
             }
         });
     });	

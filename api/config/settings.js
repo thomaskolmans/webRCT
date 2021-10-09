@@ -14,5 +14,4 @@ var settings = {
     password : process.env.DB_PASSWORD
   }
 };
-
 module.exports = settings;

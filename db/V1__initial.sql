@@ -18,3 +18,10 @@ CREATE TABLE IF NOT EXISTS `webrtc`.`session_user`(
     `left` DateTime,
     FOREIGN KEY (session_id) REFERENCES session(id)
 );
+
+CREATE TABLE IF NOT EXISTS `webrtc`.`session_queue`(
+    `id` int auto_increment PRIMARY KEY,
+    `session_id` int, 
+    `started` DateTime,
+    FOREIGN KEY (session_id) REFERENCES session(id)
+);

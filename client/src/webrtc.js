@@ -1,4 +1,6 @@
 require('dotenv').config();
+
+import Peer from 'peerjs';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider}  from 'react-redux';
@@ -6,19 +8,20 @@ import MetaTags from 'react-meta-tags';
 import {BrowserRouter, BrowserHistory, matchPath, Switch, Route, Link} from 'react-router-dom';
 import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
-import Video from './components/Video';
-import {BUSINESS_NAME, BUSINESS_LOGO_SQUARE} from "babel-dotenv";
+import VideoContainer from './containers/VideoContainer';
+import {BACKGROUND_COLOR, BUSINESS_NAME, BUSINESS_LOGO_SQUARE} from "babel-dotenv";
 
 import configureStore from './store/configureStore.js';
 
 const store = configureStore();
+const peer = new Peer({ host: location.hostname, port: location.port, path: '/peerjs', proxied: true });
+window.localStream = new MediaStream();
+
+window.sockets = [];
+window.calls = [];
 
 export default class WebRTC extends React.Component{
 
-	constructor(props){
-		super(props);
-    }
-    
 	render(){
 		return (
 			<Provider store={store}>
@@ -28,8 +31,8 @@ export default class WebRTC extends React.Component{
 							<TransitionGroup>
 								<CSSTransition key={location.key} classNames="pagefade" timeout={300}>
 									<Switch location={location} >
-										<Route exact path="/" component={PageShell(Video)} key="video" />
-										<Route exact path="/:key" component={PageShell(Video)} key="video" />
+										<Route exact path="/" component={PageShell(VideoContainer)} key="video" />
+										<Route exact path="/:key" component={PageShell(VideoContainer)} key="video_with_keym" />
 									</Switch>
 								</CSSTransition>
 							</TransitionGroup>
@@ -40,14 +43,16 @@ export default class WebRTC extends React.Component{
  		);
 	}
 }
+
 const PageShell = Page => { 
     return props =>
-		<div className="page">
+		<div className="page" style={{
+			backgroundColor: "#" + BACKGROUND_COLOR
+		}}>
 			<BasicTags />
-			<Page {...props} />
+			<Page peer={peer} sockets={sockets} {...props} />
 		</div>
 };
-
 
 class BasicTags extends React.Component{
 	render(){
@@ -58,7 +63,8 @@ class BasicTags extends React.Component{
 			    <meta property="og:title" content={BUSINESS_NAME} />
 			    <meta property="og:site_name" content={BUSINESS_NAME} />
 			    <meta itemProp="name" content={BUSINESS_NAME} />
-
+				<meta property="description" content={"Simple videoconferencing of" + BUSINESS_NAME}/>
+				<meta property="og:description" content={"Simple videoconferencing of" + BUSINESS_NAME} />
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<link rel="shortcut icon" href={BUSINESS_LOGO_SQUARE} />
@@ -67,4 +73,4 @@ class BasicTags extends React.Component{
 	}
 }
 
-ReactDOM.render(<WebRTC />,document.getElementById("webrtc"));
+ReactDOM.render(<WebRTC />, document.getElementById("webrtc"));
